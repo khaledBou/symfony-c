@@ -1,0 +1,5 @@
+parameters:
+  immo_reseau_db_host: '5.39.74.134'
+  immo_reseau_db_name: 'immoreseau_pro'
+  immo_reseau_db_user: 'immoreseau_pro'
+  immo_reseau_db_password: 'yfE011L3p5t8Hy4'

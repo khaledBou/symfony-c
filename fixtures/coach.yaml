@@ -1,0 +1,25 @@
+App\Entity\User\Coach:
+  delphine_feuillard_coach:
+    imported: false
+    network: pp
+    email: d.feuillad@proprietes-privees.com
+    password: 64faf5d0b1dc311fd0f94af64f6c296a03045571 # plop
+    firstName: Delphine
+    lastName: Feuillard
+    phone: 0805130017
+  claire_mosteau_coach:
+    imported: false
+    network: pp
+    email: c.mosteau@proprietes-privees.com
+    password: 64faf5d0b1dc311fd0f94af64f6c296a03045571 # plop
+    firstName: Claire
+    lastName: Mosteau
+    phone: 0805130017
+  vincent_robic_coach:
+    imported: false
+    network: pp
+    email: v.robic@proprietes-privees.com
+    password: 64faf5d0b1dc311fd0f94af64f6c296a03045571 # plop
+    firstName: Vincent
+    lastName: Robic
+    phone: 0805130017

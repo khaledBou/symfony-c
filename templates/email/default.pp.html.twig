@@ -1,0 +1,61 @@
+{# Template repris des mails envoyés par le CRM PP #}
+<table bgcolor="#eae9e9" width="100%">
+    <tbody>
+        <table bgcolor="#eae9e9" align="center" style="margin:15px auto;font-family:Century Gothic,sans-serif;text-align:justify;width:600px;" width="600px" cellspacing="0" cellpadding="0" border="0">
+            <tbody>
+                <tr>
+                    <td style="padding:0;">&nbsp;</td>
+                </tr>
+                <tr style="width:600px;">
+                    <td style="width:600px;height:5px;background-color:#e70142;padding:0;"></td>
+                </tr>
+                <tr style="background-color:#FFF;color:#0b0101;text-align:center;width:600px;">
+                    <td style="width:600px;">
+                        <table style="width:100%;" cellspacing="0" cellpadding="0" border="0">
+                            <tbody>
+                                <tr>
+                                    <td style="padding:0;text-align:center;">
+                                        <img style="width: 600px; margin:0 auto;" src="http://crm.proprietes-privees.com/img/mail/header.png">
+                                        <p style="width: 600px; background-image:url(http://crm.proprietes-privees.com/img/mail/title.png);line-height:47px;height:47px;font-weight:bold;font-size:1em;font-family:Century Gothic,sans-serif;color:#FFFFFF;margin:0 auto;background-repeat:no-repeat;">
+                                            {{ title }}
+                                        </p>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+                <tr style="width:600px;">
+                    <td style="width:600px;height:1px;background-color:#ddd;padding:0;"></td>
+                </tr>
+                <tr>
+                    <td style="padding:0;">&nbsp;</td>
+                </tr>
+                <tr style="background-color:#FFF;color:#0b0101;width:600px;">
+                    <td style="padding-left:15px;padding-right:15px;padding-top:15px;width:570px;">
+                        <table style="width:100%;" cellspacing="0" cellpadding="0" border="0">
+                            <tbody>
+                                <tr>
+                                    <td style="padding:0;">
+                                        <p width="570px" style="font-size:13px;font-family:Century Gothic,sans-serif;">
+                                            {{ content|nl2br|raw }}
+                                            <br><br>
+                                            <b style="color:#ed1651;font-weight:bold;">{{ sender }}</b>
+                                            <br><br>
+                                            <span style="color:#ed1651;">
+                                                {{ "Tél : %phone%"|trans({'%phone%': sender_phone is defined ? sender_phone : '0805 13 00 17' }) }}<br>
+                                                {{ "Fax : %fax%"|trans({'%fax%': '02 40 05 96 72'}) }}
+                                            </span>
+                                            <br><br>
+                                            <img src="http://www.proprietes-privees.com/docs/signatureNego.png">
+                                        </p>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </tbody>
+</table>

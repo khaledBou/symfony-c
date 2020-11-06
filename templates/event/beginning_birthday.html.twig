@@ -1,0 +1,5 @@
+<div class="listview__heading">
+    <i class="zmdi zmdi-cake"></i>
+    {% set years = date(event.date).diff(event.mandatary.beginDate).y %}
+    {{ years > 1 ? "Anniversaire d'entrée dans le réseau : %years% ans"|trans({'%years%': years}) : "Anniversaire d'entrée dans le réseau : 1 an"|trans }}
+</div>

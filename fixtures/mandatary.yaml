@@ -1,0 +1,45 @@
+App\Entity\User\Mandatary:
+  mandatary_{1..10}:
+    imported: true
+    network: pp
+    email: <email()>
+    firstName: <firstName()>
+    lastName: <lastName()>
+    slug: <slug()>
+    civility: <randomElement(['M.', 'MME', 'MLLE'])>
+    phone: <e164PhoneNumber()>
+    birthDate: <date_create()>
+    beginDate: <date_create()>
+    zipCode: <postcode()>
+    city: <city()>
+    bareme: <randomElement(['PP', 'dérogatoire'])>
+    contract: <(App\Entity\User\Mandatary::CONTRACT_MICRO_ENTREPRENEUR)>
+    activities:
+      - résidentiel
+    pack: STARTER 2016
+    supportStatus: <(App\Entity\User\Mandatary::SUPPORT_STATUS_FAIR)>
+    skilled: true
+    crmUrl: <url()>
+    websiteUrl: <url()>
+    freshdeskUserId: "36027579029"
+    coach: "@delphine_feuillard_coach"
+    salesRevenue: <numberBetween(0, 300000)>
+    crmLoginsCount: <numberBetween(0, 1000)>
+    tradesDates:
+      - <date_create()>
+      - <date_create()>
+      - <date_create()>
+      - <date_create()>
+      - <date_create()>
+    tradesCount: 5
+    exclusiveTradesCount: 1
+    compromisesDates:
+      - <date_create()>
+    compromisesCount: 1
+    salesDates:
+      - <date_create()>
+    salesCount: 1
+    autonomePublication: <boolean()>
+    tradeShortfall: <boolean(10)>
+    compromiseShortfall: <boolean()>
+    saleShortfall: <boolean()>

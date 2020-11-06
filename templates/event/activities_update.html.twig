@@ -1,0 +1,9 @@
+<div class="listview__heading">
+    <i class="zmdi zmdi-swap"></i>
+    {{ event_config.name }}
+</div>
+<p>
+    {{ event.oldActivities is empty ? "NC"|trans : event.oldActivities|join(", ") }}
+    <i class="zmdi zmdi-forward"></i>
+    <strong>{{ event.newActivities is empty ? "NC"|trans : event.newActivities|join(", ") }}</strong>
+</p>

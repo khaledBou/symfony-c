@@ -1,0 +1,4 @@
+<div class="listview__heading">
+    <i class="zmdi zmdi-flash"></i>
+    {{ ((event.nthYear + 1) > 1 ? "%nthSale%<sup>ème</sup> vente réalisée sur la %nthYear%<sup>ème</sup> année d'activité" : "%nthSale%<sup>ème</sup> vente réalisée sur la %nthYear%<sup>ère</sup> année d'activité"|trans({'%nthSale%': event.nthSale, '%nthYear%': (event.nthYear + 1)}))|raw }}
+</div>

@@ -1,0 +1,33 @@
+#m      h   dom mon dow user       command
+
+# Import des utilisateurs Immo-Reseau
+0       3   *   *   *   www-data   /var/www/sf_coaching/bin/console app:user:import:coaches:ir --env=prod >> /var/www/sf_coaching/var/log/commands/app.user.import.coaches.ir.log
+
+# Import des utilisateurs Rezoximo, puis des événements (ordre à respecter)
+5       3   *   *   *   www-data   /var/www/sf_coaching/bin/console app:user:import:mandataries:rz --env=prod >> /var/www/sf_coaching/var/log/commands/app.user.import.mandataries.rz.log
+0       4   *   *   *   www-data   /var/www/sf_coaching/bin/console app:event:import:rz --env=prod >> /var/www/sf_coaching/var/log/commands/app.event.import.rz.log
+
+# Import des utilisateurs Proprietes-Privees, puis des indicateurs et des événements (ordre à respecter)
+10      3   *   *   *   www-data   /var/www/sf_coaching/bin/console app:user:import:coaches:pp --env=prod >> /var/www/sf_coaching/var/log/commands/app.user.import.coaches.pp.log
+15      3   *   *   *   www-data   /var/www/sf_coaching/bin/console app:user:import:mandataries:pp --env=prod >> /var/www/sf_coaching/var/log/commands/app.user.import.mandataries.pp.log
+5       4   *   *   *   www-data   /var/www/sf_coaching/bin/console app:indicator:import:pp --env=prod >> /var/www/sf_coaching/var/log/commands/app.indicator.import.pp.log
+20      4   *   *   *   www-data   /var/www/sf_coaching/bin/console app:event:import:pp --env=prod >> /var/www/sf_coaching/var/log/commands/app.event.import.pp.log
+
+# Import des événéments "Commentaire" des utilisateurs Proprietes-Privees depuis le CRM
+*/15    *   *   *   *   www-data   /var/www/sf_coaching/bin/console app:event:comment:import:pp --env=prod >> /var/www/sf_coaching/var/log/commands/app.event.comment.import.pp.log
+
+# Envoi des relances aux négociateurs, par SMS et e-mail
+*/15    *   *   *   *   www-data   /var/www/sf_coaching/bin/console app:reminder:mandatary:sms --env=prod >> /var/www/sf_coaching/var/log/commands/app.reminder.mandatary.sms.log
+*/15    *   *   *   *   www-data   /var/www/sf_coaching/bin/console app:reminder:mandatary:email --env=prod >> /var/www/sf_coaching/var/log/commands/app.reminder.mandatary.email.log
+
+# Envoi des SMS aux négociateurs
+*/15    *   *   *   *   www-data   /var/www/sf_coaching/bin/console app:sms --env=prod >> /var/www/sf_coaching/var/log/commands/app.sms.log
+
+# Envoi des rappels aux coachs, par notification
+*/15    *   *   *   *   www-data   /var/www/sf_coaching/bin/console app:reminder:coach:notification --env=prod >> /var/www/sf_coaching/var/log/commands/app.reminder.coach.notification.log
+*/15    *   *   *   *   www-data   /var/www/sf_coaching/bin/console app:reminder:coach:email --env=prod >> /var/www/sf_coaching/var/log/commands/app.reminder.coach.email.log
+
+# Envoi des rappels de rendez-vous aux négociateurs
+0       9-19   *   *   *   www-data   /var/www/sf_coaching/bin/console app:appointment:sms --env=prod >> /var/www/sf_coaching/var/log/commands/app.appointment.sms.log
+
+# Conserver la ligne vide sous cette ligne, sans quoi la crontab ne pourra pas s'exécuter.

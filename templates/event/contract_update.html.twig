@@ -1,0 +1,15 @@
+<div class="listview__heading">
+    <i class="zmdi zmdi-swap"></i>
+    {{ event_config.name }}
+</div>
+<p>
+    {% set contracts = [
+        "micro-entrepreneur"|trans,
+        "agent commercial"|trans,
+        "portage salarial"|trans,
+        "concessionnaire"|trans,
+    ] %}
+    {{ contracts[event.oldContract] is defined ? contracts[event.oldContract] : "NC"|trans }}
+    <i class="zmdi zmdi-forward"></i>
+    <strong>{{ contracts[event.newContract] is defined ? contracts[event.newContract] : "NC"|trans }}</strong>
+</p>

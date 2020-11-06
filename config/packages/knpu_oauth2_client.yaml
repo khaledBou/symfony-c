@@ -1,0 +1,27 @@
+# @see https://github.com/knpuniversity/oauth2-client-bundle#configuration
+knpu_oauth2_client:
+    clients:
+        keycloak_pp:
+            type: keycloak
+            client_id: 'account'
+            client_secret: '%env(OAUTH_KEYCLOAK_CLIENT_SECRET_PP)%'
+            redirect_route: connect_keycloak_check
+            redirect_params: {}
+            auth_server_url: https://keycloak.preprod.oryx-immobilier.com/auth
+            realm: proprietes-privees
+        keycloak_ir:
+            type: keycloak
+            client_id: 'account'
+            client_secret: '%env(OAUTH_KEYCLOAK_CLIENT_SECRET_IR)%'
+            redirect_route: connect_keycloak_check
+            redirect_params: {}
+            auth_server_url: https://keycloak.preprod.oryx-immobilier.com/auth
+            realm: immo-reseau
+        keycloak_rz:
+            type: keycloak
+            client_id: 'account'
+            client_secret: '%env(OAUTH_KEYCLOAK_CLIENT_SECRET_RZ)%'
+            redirect_route: connect_keycloak_check
+            redirect_params: {}
+            auth_server_url: https://keycloak.preprod.oryx-immobilier.com/auth
+            realm: rezoximo

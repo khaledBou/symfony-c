@@ -1,0 +1,80 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ "%s > %s > %s"|format(app_name, "Négociateurs"|trans, "E-mailing"|trans) }}{% endblock %}
+{% block page_title %}
+    <a href="{{ path('mandatary_index') }}">
+        <i class="zmdi zmdi-accounts-list"></i> {{ "Négociateurs"|trans }}
+    </a>
+    /
+    <i class="zmdi zmdi-mail-send"></i> {{ "E-mailing"|trans }}
+{% endblock %}
+
+{% block content %}
+     <section class="content content--full">
+        {{ form_start(form) }}
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <h4 class="card-title">
+                                {{ "Destinataires"|trans }}
+                            </h4>
+                            <div class="toolbar">
+                                <div class="toolbar__label">
+                                    {{ "Sélectionnés : <span></span>/%count%"|trans({'%count%': form.mandataries.vars.choices|length})|raw }}
+                                </div>
+                            </div>
+                            {{ form_row(form.mandataries) }}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <h4 class="card-title">
+                                {{ "Contenu"|trans }}
+                            </h4>
+                            {{ form_row(form.subject) }}
+                            {{ form_row(form.content) }}
+                            <p>{{ "Ces variables peuvent être injectées dans l'objet et dans le corps de l'e-mail :"|trans }}</p>
+                            <table class="table table-sm">
+                                <tr>
+                                    <td><code>{{ constant('App\\Controller\\MandataryController::EMAILING_PLACEHOLDER_FIRST_NAME') }}</code></td>
+                                    <td>{{ "prénom du négociateur"|trans }}</td>
+                                </tr>
+                                <tr>
+                                    <td><code>{{ constant('App\\Controller\\MandataryController::EMAILING_PLACEHOLDER_LAST_NAME') }}</code></td>
+                                    <td>{{ "nom du négociateur"|trans }}</td>
+                                </tr>
+                            </table>
+                            <div class="submit-buttons float-right">
+                                {{ form_row(form.test, {
+                                    'attr': {
+                                        'class': 'btn-light',
+                                        'title': "Recevoir un e-mail de test"|trans,
+                                        'data-toggle': 'tooltip',
+                                        'data-placement': 'left',
+                                    }
+                                }) }}
+                                {{ form_row(form.send) }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {{ form_end(form) }}
+    </section>
+{% endblock %}
+
+{% block stylesheets %}
+    <!-- Vendors: Forms -->
+    <link rel="stylesheet" href="/assets/vendors/select2/css/select2.min.css">
+{% endblock %}
+
+{% block javascripts %}
+    <!-- Vendors: Forms -->
+    <script src="/assets/vendors/select2/js/select2.full.min.js"></script>
+    <script src="/assets/vendors/autosize/autosize.min.js"></script>
+    <!-- Custom script -->
+    <script src="/assets/js/mandatary-emailing.js"></script>
+{% endblock %}

@@ -1,0 +1,5 @@
+<div class="listview__heading">
+    <i class="zmdi zmdi-alert-triangle"></i>
+    {{ event_config.name }}
+</div>
+<p>{{ "Plus de compromis depuis <strong>%days% jours</strong>."|trans({'%days%': event.daysSinceLastCompromise})|raw }}</p>

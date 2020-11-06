@@ -1,0 +1,529 @@
+# Documenté dans App\DependencyInjection\Configuration
+app:
+  networks:
+    pp:
+      name: Coaching
+      domain: "%env(PP_NETWORK_DOMAIN)%"
+      keycloak_client_id: keycloak_pp
+      login_route: "%env(PP_LOGIN_ROUTE)%"
+      redirect_url_after_logout: "%env(PP_REDIRECT_URL_AFTER_LOGOUT)%"
+      google_analytics_id: "%env(PP_GOOGLE_ANALYTICS_ID)%"
+      calendars:
+        coach: google
+        mandatary: zimbra
+      zimbra_api_url: "https://zimbra.immo-facile.com/service/soap"
+      freshdesk_url: "https://support.proprietes-privees.com"
+    ir:
+      name: Coaching
+      domain: "%env(IR_NETWORK_DOMAIN)%"
+      keycloak_client_id: keycloak_ir
+      login_route: "%env(IR_LOGIN_ROUTE)%"
+      redirect_url_after_logout: "%env(IR_REDIRECT_URL_AFTER_LOGOUT)%"
+      google_analytics_id: "%env(IR_GOOGLE_ANALYTICS_ID)%"
+      calendars:
+        coach: ~
+        mandatary: ~
+      zimbra_api_url: ~
+      freshdesk_url: ~
+    rz:
+      name: Coaching
+      domain: "%env(RZ_NETWORK_DOMAIN)%"
+      keycloak_client_id: keycloak_rz
+      login_route: "%env(RZ_LOGIN_ROUTE)%"
+      redirect_url_after_logout: "%env(RZ_REDIRECT_URL_AFTER_LOGOUT)%"
+      google_analytics_id: "%env(RZ_GOOGLE_ANALYTICS_ID)%"
+      calendars:
+        coach: google
+        mandatary: google
+      zimbra_api_url: ~
+      freshdesk_url: ~
+  calendars:
+    google:
+      helper: App\Service\Calendar\GoogleCalendarHelper
+    zimbra:
+      helper: App\Service\Calendar\ZimbraCalendarHelper
+  indicators:
+    pack_demarrage:
+      name: "Pack de démarrage reçu"
+      entity: App\Entity\Indicator\BooleanIndicator
+      form_type: App\Form\Indicator\BooleanType
+      fill_method: ~
+      group: "Démarrage"
+      networks:
+        - pp
+        - ir
+    espace_pro:
+      name: "Espace Pro pris en main"
+      entity: App\Entity\Indicator\BooleanIndicator
+      form_type: App\Form\Indicator\BooleanType
+      fill_method: ~
+      group: "Démarrage"
+      networks:
+        - pp
+        - ir
+    etudes_de_marche:
+      name: "Études de marché réalisées"
+      entity: App\Entity\Indicator\BooleanIndicator
+      form_type: App\Form\Indicator\BooleanType
+      fill_method: ~
+      group: "Démarrage"
+      networks:
+        - pp
+        - ir
+        - rz
+    zone_prospection:
+      name: "Zone de prospection définie"
+      entity: App\Entity\Indicator\BooleanIndicator
+      form_type: App\Form\Indicator\BooleanType
+      fill_method: ~
+      group: "Démarrage"
+      networks:
+        - pp
+        - ir
+        - rz
+    planning_prospection:
+      name: "Planning de prospection fait"
+      entity: App\Entity\Indicator\BooleanIndicator
+      form_type: App\Form\Indicator\BooleanType
+      fill_method: ~
+      group: "Démarrage"
+      networks:
+        - pp
+        - ir
+        - rz
+    outils:
+      name: "Connaissance des outils"
+      entity: App\Entity\Indicator\BooleanIndicator
+      form_type: App\Form\Indicator\BooleanType
+      fill_method: ~
+      group: "Démarrage"
+      networks:
+        - pp
+        - ir
+        - rz
+    site:
+      name: "Mini-site réalisé"
+      entity: App\Entity\Indicator\BooleanIndicator
+      form_type: App\Form\Indicator\BooleanType
+      fill_method: ~
+      group: "Démarrage"
+      networks:
+        - pp
+        - ir
+        - rz
+    booster:
+      name: "Étapes Booster réalisées"
+      entity: App\Entity\Indicator\TrainingProgramIndicator
+      form_type: App\Form\Indicator\TrainingProgramType
+      fill_method: fillBoosterIndicator
+      group: "Booster"
+      networks:
+        - pp
+    starter:
+      name: "Étapes Starter réalisées"
+      entity: App\Entity\Indicator\TrainingProgramIndicator
+      form_type: App\Form\Indicator\TrainingProgramType
+      fill_method: ~
+      group: "Starter"
+      networks:
+        - ir
+    pro_academy:
+      name: "Étapes Pro Academy réalisées"
+      entity: App\Entity\Indicator\TrainingProgramIndicator
+      form_type: App\Form\Indicator\TrainingProgramType
+      fill_method: ~
+      group: "Pro Academy"
+      networks:
+        - rz
+    autonome_publication:
+      name: "Autonome en publication"
+      entity: App\Entity\Indicator\BooleanIndicator
+      form_type: App\Form\Indicator\BooleanType
+      fill_method: fillAutonomePublicationIndicator
+      group: "Publication"
+      networks:
+        - pp
+    autonome_publication_manuel:
+      name: "Autonome en publication"
+      entity: App\Entity\Indicator\BooleanIndicator
+      form_type: App\Form\Indicator\BooleanType
+      fill_method: ~
+      group: "Publication"
+      networks:
+        - ir
+        - rz
+    administrative:
+      name: "Démarches administratives"
+      entity: App\Entity\Indicator\AdministrativeIndicator
+      form_type: App\Form\Indicator\AdministrativeType
+      fill_method: fillAdministrativeIndicator
+      group: "Démarches administratives"
+      networks:
+        - pp
+    administrative_manuel:
+      name: "Démarches administratives"
+      entity: App\Entity\Indicator\AdministrativeIndicator
+      form_type: App\Form\Indicator\AdministrativeType
+      fill_method: ~
+      group: "Démarches administratives"
+      networks:
+        - ir
+        - rz
+    unpaid:
+      name: "En situation d'impayé"
+      entity: App\Entity\Indicator\BooleanIndicator
+      form_type: App\Form\Indicator\BooleanType
+      fill_method: fillUnpaidIndicator
+      group: "Situation administrative"
+      networks:
+        - pp
+    unpaid_manuel:
+      name: "En situation d'impayé"
+      entity: App\Entity\Indicator\BooleanIndicator
+      form_type: App\Form\Indicator\BooleanType
+      fill_method: ~
+      group: "Situation administrative"
+      networks:
+        - ir
+        - rz
+    suspended:
+      name: "Suspendu"
+      entity: App\Entity\Indicator\BooleanIndicator
+      form_type: App\Form\Indicator\BooleanType
+      fill_method: fillSuspendedIndicator
+      group: "Situation administrative"
+      networks:
+        - pp
+    suspended_manuel:
+      name: "Suspendu"
+      entity: App\Entity\Indicator\BooleanIndicator
+      form_type: App\Form\Indicator\BooleanType
+      fill_method: ~
+      group: "Situation administrative"
+      networks:
+        - ir
+        - rz
+    resigned:
+      name: "Résilié"
+      entity: App\Entity\Indicator\BooleanIndicator
+      form_type: App\Form\Indicator\BooleanType
+      fill_method: fillResignedIndicator
+      group: "Situation administrative"
+      networks:
+        - pp
+    resigned_manuel:
+      name: "Résilié"
+      entity: App\Entity\Indicator\BooleanIndicator
+      form_type: App\Form\Indicator\BooleanType
+      fill_method: ~
+      group: "Situation administrative"
+      networks:
+        - ir
+        - rz
+  events_filters:
+    administrative: "Administratif"
+    appointment: "RDV"
+    birthday: "Anniversaires"
+    call: "Appels"
+    reminder: "Relances, rappels & SMS"
+    coaching: "Coaching"
+    comment: "Commentaires"
+    issue: "Problèmes"
+    success: "Succès"
+    training: "Formation"
+  events:
+    activities_update:
+      name: "Changement d'activités"
+      entity: App\Entity\Event\ActivitiesUpdateEvent
+      form_type: ~
+      create_method: createActivitiesUpdateEvent
+      template: "event/activities_update.html.twig"
+      networks:
+        - pp
+      filters:
+        - administrative
+    administrative_update:
+      name: "Changement administratif"
+      entity: App\Entity\Event\AdministrativeUpdateEvent
+      form_type: ~
+      create_method: createAdministrativeUpdateEvent
+      template: "event/administrative_update.html.twig"
+      networks:
+        - pp
+      filters:
+        - administrative
+    appointment:
+      name: "Rendez-vous"
+      entity: App\Entity\Event\AppointmentEvent
+      form_type: App\Form\Event\AppointmentType
+      create_method: ~
+      template: "event/appointment.html.twig"
+      networks:
+        - pp
+        - ir
+        - rz
+      filters:
+        - coaching
+        - appointment
+    beginning:
+      name: "Entrée dans le réseau"
+      entity: App\Entity\Event\BeginningEvent
+      form_type: ~
+      create_method: createBeginningEvent
+      template: "event/beginning.html.twig"
+      networks:
+        - pp
+        - ir
+        - rz
+      filters:
+        - administrative
+    beginning_birthday:
+      name: "Anniversaire d'entrée dans le réseau"
+      entity: App\Entity\Event\BeginningBirthdayEvent
+      form_type: ~
+      create_method: createBeginningBirthdayEvent
+      template: "event/beginning_birthday.html.twig"
+      networks:
+        - pp
+        - ir
+        - rz
+      filters:
+        - administrative
+        - birthday
+    birthday:
+      name: "Anniversaire de naissance"
+      entity: App\Entity\Event\BirthdayEvent
+      form_type: ~
+      create_method: createBirthdayEvent
+      template: "event/birthday.html.twig"
+      networks:
+        - pp
+        - ir
+        - rz
+      filters:
+        - administrative
+        - birthday
+    call:
+      name: "Appel téléphonique"
+      entity: App\Entity\Event\CallEvent
+      form_type: App\Form\Event\CallType
+      create_method: ~
+      template: "event/call.html.twig"
+      networks:
+        - pp
+        - ir
+        - rz
+      filters:
+        - coaching
+        - call
+    coach_reminder:
+      name: "Rappel (coach)"
+      entity: App\Entity\Event\CoachReminderEvent
+      form_type: App\Form\Event\CoachReminderType
+      create_method: ~
+      template: "event/coach_reminder.html.twig"
+      networks:
+        - pp
+        - ir
+        - rz
+      filters:
+        - coaching
+        - reminder
+    comment:
+      name: "Commentaire"
+      entity: App\Entity\Event\CommentEvent
+      form_type: App\Form\Event\CommentType
+      create_method: ~
+      template: "event/comment.html.twig"
+      networks:
+        - pp
+        - ir
+        - rz
+      filters:
+        - coaching
+        - comment
+    compromise_shortfall:
+      name: "Plus de nouveau compromis"
+      entity: App\Entity\Event\CompromiseShortfallEvent
+      form_type: ~
+      create_method: createCompromiseShortfallEvent
+      template: "event/compromise_shortfall.html.twig"
+      networks:
+        - pp
+        - ir
+      filters:
+        - issue
+    contract_update:
+      name: "Changement de contrat"
+      entity: App\Entity\Event\ContractUpdateEvent
+      form_type: ~
+      create_method: createContractUpdateEvent
+      template: "event/contract_update.html.twig"
+      networks:
+        - pp
+        - ir
+        - rz
+      filters:
+        - administrative
+    emailing:
+      name: "E-mailing"
+      entity: App\Entity\Event\EmailingEvent
+      form_type: ~
+      create_method: ~
+      template: "event/emailing.html.twig"
+      networks:
+        - pp
+        - ir
+        - rz
+      filters:
+        - coaching
+    freshdesk_feedback:
+      name: "Évaluation Freshdesk"
+      entity: App\Entity\Event\FreshdeskFeedbackEvent
+      form_type: ~
+      create_method: createFreshdeskFeedbackEvent
+      template: "event/freshdesk_feedback.html.twig"
+      networks:
+        - pp
+        - ir
+      filters:
+        - coaching
+    mandatary_reminder:
+      name: "Relance (négo)"
+      entity: App\Entity\Event\MandataryReminderEvent
+      form_type: App\Form\Event\MandataryReminderType
+      create_method: ~
+      template: "event/mandatary_reminder.html.twig"
+      networks:
+        - pp
+        - ir
+        - rz
+      filters:
+        - coaching
+        - reminder
+    nth_compromise:
+      name: "Énième compromis"
+      entity: App\Entity\Event\NthCompromiseEvent
+      form_type: ~
+      create_method: createNthCompromiseEvent
+      template: "event/nth_compromise.html.twig"
+      networks:
+        - pp
+        - ir
+      filters:
+        - success
+    nth_sale:
+      name: "Énième vente"
+      entity: App\Entity\Event\NthSaleEvent
+      form_type: ~
+      create_method: createNthSaleEvent
+      template: "event/nth_sale.html.twig"
+      networks:
+        - pp
+        - ir
+      filters:
+        - success
+    nth_trade:
+      name: "Énième mandat"
+      entity: App\Entity\Event\NthTradeEvent
+      form_type: ~
+      create_method: createNthTradeEvent
+      template: "event/nth_trade.html.twig"
+      networks:
+        - pp
+        - ir
+      filters:
+        - success
+    pack_update:
+      name: "Changement de pack"
+      entity: App\Entity\Event\PackUpdateEvent
+      form_type: ~
+      create_method: createPackUpdateEvent
+      template: "event/pack_update.html.twig"
+      networks:
+        - pp
+        - ir
+        - rz
+      filters:
+        - administrative
+    sale_shortfall:
+      name: "Plus de nouvelle vente"
+      entity: App\Entity\Event\SaleShortfallEvent
+      form_type: ~
+      create_method: createSaleShortfallEvent
+      template: "event/sale_shortfall.html.twig"
+      networks:
+        - pp
+        - ir
+      filters:
+        - issue
+    sms:
+      name: "SMS"
+      entity: App\Entity\Event\SmsEvent
+      form_type: App\Form\Event\SmsType
+      create_method: ~
+      template: "event/sms.html.twig"
+      networks:
+        - pp
+        - ir
+        - rz
+      filters:
+        - coaching
+        - reminder
+    termination:
+      name: "Résiliation"
+      entity: App\Entity\Event\TerminationEvent
+      form_type: ~
+      create_method: createTerminationEvent
+      template: "event/termination.html.twig"
+      networks:
+        - pp
+        - ir
+      filters:
+        - administrative
+        - issue
+    trade_shortfall:
+      name: "Plus de nouveau mandat"
+      entity: App\Entity\Event\TradeShortfallEvent
+      form_type: ~
+      create_method: createTradeShortfallEvent
+      template: "event/trade_shortfall.html.twig"
+      networks:
+        - pp
+        - ir
+      filters:
+        - issue
+    training_program_mission:
+      name: "Validation d'une mission de formation"
+      entity: App\Entity\Event\TrainingProgramMissionEvent
+      form_type: ~
+      create_method: createTrainingProgramMissionEvent
+      template: "event/training_program_mission.html.twig"
+      networks:
+        - pp
+        - ir
+      filters:
+        - success
+        - training
+    fee_greater_than:
+      name: "Honoraires supérieurs à"
+      entity: App\Entity\Event\FeeGreaterThanEvent
+      form_type: ~
+      create_method: createFeeGreaterThanEvent
+      template: "event/fee_greater_than_event.html.twig"
+      networks:
+        - pp
+        - ir
+      filters:
+        - success
+    nth_sale_nth_year:
+      name: "Enième vente réalisé sur la Enième année"
+      entity: App\Entity\Event\NthSaleNthYearEvent
+      form_type: ~
+      create_method: createNthSaleNthYearEvent
+      template: "event/nth_sale_nth_year_event.html.twig"
+      networks:
+        - pp
+        - ir
+      filters:
+        - success

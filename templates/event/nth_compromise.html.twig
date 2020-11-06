@@ -1,0 +1,4 @@
+<div class="listview__heading">
+    <i class="zmdi zmdi-collection-item-{{ event.nth < 9 ? event.nth : '9-plus' }}"></i>
+    {{ (event.nth > 1 ? "Signature du %nth%<sup>ème</sup> compromis" : "Signature du %nth%<sup>er</sup> compromis")|trans({'%nth%': event.nth})|raw }}
+</div>

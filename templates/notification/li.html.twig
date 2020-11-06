@@ -1,0 +1,55 @@
+<li id="notifications" class="dropdown top-nav__notifications {{ not has_notifications ? 'top-nav__notifications--cleared' }}">
+    <a id="show-notifications" href="#" data-toggle="dropdown" class="{{ has_unread_notifications > 0 ? 'top-nav__notify' }}" title="{{ "Voir mes notifications"|trans }}">
+        <i class="zmdi zmdi-notifications"></i>
+    </a>
+    <div class="dropdown-menu dropdown-menu-right dropdown-menu--block">
+        <div class="listview listview--hover">
+            <div class="listview__header">
+                {{ "Notifications"|trans }}
+                <div class="actions">
+                    <a id="delete-notifications"
+                       href="{{ path('notifications_delete') }}"
+                       class="actions__item zmdi zmdi-delete {{ not has_read_notifications ? 'hidden' }}"
+                       title="{{ "Supprimer celles déjà lues"|trans }}"
+                       data-toggle="tooltip"
+                       data-placement="top"
+                    ></a>
+                    <a id="clear-notifications"
+                       href="{{ path('notifications_mark_as_read') }}"
+                       class="actions__item zmdi zmdi-check-all {{ not has_unread_notifications ? 'hidden' }}"
+                       title="{{ "Marquer comme lues"|trans }}"
+                       data-toggle="tooltip"
+                       data-placement="top"
+                    ></a>
+                </div>
+            </div>
+            <div class="listview__scroll scrollbar-inner">
+                {% for notification in notifications %}
+                    <a href="{{ path('notification_show', {id: notification.id}) }}" class="listview__item {{ notification.read ? 'read' : 'unread' }}" {{ 'mandatary_index' == app.request.attributes.get('_route') ? 'target="_blank"' }}>
+                        {% if notification.initiator is not null %}
+                            {% if notification.initiator.avatar is null %}
+                                {% set letter = notification.initiator.firstName|first|upper %}
+                                <i class="{{ 'avatar-char %s'|format(get_color(letter)) }}"
+                                   title="{{ notification.initiator }}"
+                                >{{ letter }}</i>
+                            {% else %}
+                                <img src="{{ '/assets/avatar/%s'|format(notification.initiator.avatar) }}"
+                                     class="listview__img"
+                                     alt="{{ "Photo de %mandatary%"|trans({'%mandatary%': notification.initiator}) }}"
+                                     title="{{ notification.initiator }}"
+                                >
+                            {% endif %}
+                        {% endif %}
+                        <div class="listview__content">
+                            {% if notification.initiator is not null %}
+                                <div class="listview__heading">{{ notification.initiator }}</div>
+                            {% endif %}
+                            <p>{{ notification.message }}</p>
+                        </div>
+                    </a>
+                {% endfor %}
+            </div>
+            <div class="p-1"></div>
+        </div>
+    </div>
+</li>

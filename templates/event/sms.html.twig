@@ -1,0 +1,10 @@
+<div class="listview__heading">
+    {% if event.sent %}
+        <i class="zmdi zmdi-comment"></i>
+        {{ "SMS envoyé au négociateur"|trans }}
+    {% else %}
+        <i class="zmdi zmdi-comment-outline"></i>
+        {{ "SMS à envoyer au négociateur"|trans }}
+    {% endif %}
+</div>
+<p>{{ event.content|nl2br }}</p>

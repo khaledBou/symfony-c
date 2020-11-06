@@ -1,0 +1,6 @@
+parameters:
+    proprietes_privees_api_id:               '965124599'
+    proprietes_privees_api_key:              'f0d7d026fecdfcadcc834a7cfadfb6de30c15e91'
+    proprietes_privees_api_app_name:         'coaching'
+    proprietes_privees_api_url:              'http://preprod.crm.proprietes-privees.com/api'
+    proprietes_privees_coach_avatar_url:     'http://preprod.images.proprietes-privees.com/siege'

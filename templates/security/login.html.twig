@@ -1,0 +1,33 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ "%s > %s"|format(app_name, "Connexion"|trans) }}{% endblock %}
+{% block page_title %}{{ "Connexion"|trans }}{% endblock %}
+
+{% block body %}
+    <div class="login">
+        <div class="login__block active" id="l-login">
+            <div class="login__block__header">
+                <i class="zmdi zmdi-accounts-alt"></i>
+                {{ "Coaching"|trans }}
+            </div>
+            <div class="login__block__body">
+                <form method="post">
+                    <div class="form-group form-group--float form-group--centered">
+                        <input type="text" name="email" value="{{ last_username }}" class="form-control" required autofocus>
+                        <label>{{ "Adresse e-mail"|trans }}</label>
+                        <i class="form-group__bar"></i>
+                    </div>
+                    <div class="form-group form-group--float form-group--centered">
+                        <input type="password" name="password" class="form-control" required>
+                        <label>{{ "Mot de passe"|trans }}</label>
+                        <i class="form-group__bar"></i>
+                    </div>
+                    <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+                    <button type="submit" class="btn btn--icon login__block__btn" title="{{ "Me connecter"|trans }}">
+                        <i class="zmdi zmdi-long-arrow-right"></i>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,25 @@
+<div class="listview__heading">
+    {% set ratings = {
+        '103': "extrêmement satisfait"|trans,
+        '102': "très satisfait"|trans,
+        '101': "satisfait"|trans,
+        '100': "neutre"|trans,
+        '-101': "insatisfait"|trans,
+        '-102': "très insatisfait"|trans,
+        '-103': "extrêmement insatisfait"|trans,
+    } %}
+    <i class="zmdi zmdi-thumb-up-down"></i>
+    {{ ratings[event.rating] is defined ? "Évaluation Freshdesk : %rating%"|trans({'%rating%': ratings[event.rating]}) : "Évaluation Freshdesk"|trans }}
+</div>
+{% if event.comment is not null %}
+    <p>
+        {{ event.comment|nl2br }}
+    </p>
+{% endif %}
+{% if freshdesk_url is not null and event.ticketId is not null %}
+    <p>
+        <a href="{{ '%s/a/tickets/%s'|format(freshdesk_url, event.ticketId) }}" target="_blank">
+            {{ "Ouvrir le ticket Freshdesk"|trans }} <i class="zmdi zmdi-open-in-new"></i>
+        </a>
+    </p>
+{% endif %}

@@ -1,0 +1,135 @@
+App\Entity\Event\ActivitiesUpdateEvent:
+  activities_update_event_{1..10}:
+    mandatary: "@mandatary_<current()>"
+    date: <date_create()>
+    oldActivities:
+      - résidentiel
+    newActivities:
+      - résidentiel
+      - business
+App\Entity\Event\AdministrativeUpdateEvent:
+  administrative_update_event_{1..10}:
+    mandatary: "@mandatary_<current()>"
+    date: <date_create()>
+    oldValidRsac: true
+    newValidRsac: true
+    oldValidSiret: null
+    newValidSiret: null
+    oldValidRcp: null
+    newValidRcp: null
+    oldValidCci: false
+    newValidCci: true
+    oldValidTva: true
+    newValidTva: true
+    oldValidPortage: null
+    newValidPortage: null
+App\Entity\Event\AppointmentEvent:
+  appointment_event_{1..10}:
+    mandatary: "@mandatary_<current()>"
+    coach: "@delphine_feuillard_coach"
+    date: <date_create()>
+    subject: <sentence(5)>
+    description: <paragraph(4)>
+    duration: <(new \DateInterval("PT1800S"))>
+App\Entity\Event\BeginningEvent:
+  beginning_event_{1..10}:
+    mandatary: "@mandatary_<current()>"
+    date: <date_create()>
+App\Entity\Event\BeginningBirthdayEvent:
+  beginning_birthday_event_{1..10}:
+    mandatary: "@mandatary_<current()>"
+    date: <date_create()>
+App\Entity\Event\BirthdayEvent:
+  birthday_event_{1..10}:
+    mandatary: "@mandatary_<current()>"
+    date: <date_create()>
+App\Entity\Event\CallEvent:
+  call_event_{1..10}:
+    mandatary: "@mandatary_<current()>"
+    coach: "@delphine_feuillard_coach"
+    date: <date_create()>
+    incoming: <boolean()>
+    report: <sentence(30)>
+App\Entity\Event\CoachReminderEvent:
+  coach_reminder_event_{1..10}:
+    mandatary: "@mandatary_<current()>"
+    coach: "@delphine_feuillard_coach"
+    date: <date_create()>
+    way: <(App\Entity\Event\CoachReminderEvent::WAY_NOTIFICATION)>
+    content: <sentence()>
+App\Entity\Event\CommentEvent:
+  comment_event_{1..10}:
+    mandatary: "@mandatary_<current()>"
+    coach: "@delphine_feuillard_coach"
+    date: <date_create()>
+    comment: <sentence(40)>
+App\Entity\Event\CompromiseShortfallEvent:
+  compromise_shortfall_event_{1..10}:
+    mandatary: "@mandatary_<current()>"
+    date: <date_create()>
+    daysSinceLastCompromise: 30
+App\Entity\Event\ContractUpdateEvent:
+  contract_update_event_{1..10}:
+    mandatary: "@mandatary_<current()>"
+    date: <date_create()>
+    oldContract: auto-entrepreneur
+    newContract: micro-entrepreneur
+App\Entity\Event\FreshdeskFeedbackEvent:
+  freshdesk_feedback_event_{1..10}:
+    mandatary: "@mandatary_<current()>"
+    date: <date_create()>
+    rating: <(App\Entity\Event\FreshdeskFeedbackEvent::RATING_VERY_HAPPY)>
+    ticketId: "6252"
+App\Entity\Event\MandataryReminderEvent:
+  mandatary_reminder_event_{1..10}:
+    mandatary: "@mandatary_<current()>"
+    coach: "@delphine_feuillard_coach"
+    date: <date_create()>
+    way: <(App\Entity\Event\MandataryReminderEvent::WAY_EMAIL)>
+    content: <paragraph(3)>
+App\Entity\Event\NthCompromiseEvent:
+  nth_compromise_event_{1..10}:
+    mandatary: "@mandatary_<current()>"
+    date: <date_create()>
+    nth: 5
+App\Entity\Event\NthSaleEvent:
+  nth_sale_event_{1..10}:
+    mandatary: "@mandatary_<current()>"
+    date: <date_create()>
+    nth: 1
+App\Entity\Event\NthTradeEvent:
+  nth_trade_event_{1..10}:
+    mandatary: "@mandatary_<current()>"
+    date: <date_create()>
+    nth: 5
+App\Entity\Event\PackUpdateEvent:
+  pack_update_event_{1..10}:
+    mandatary: "@mandatary_<current()>"
+    date: <date_create()>
+    oldPack: STARTER2016
+    newPack: STARTER 2017
+App\Entity\Event\SaleShortfallEvent:
+  sale_shortfall_event_{1..10}:
+    mandatary: "@mandatary_<current()>"
+    date: <date_create()>
+    daysSinceLastSale: 90
+App\Entity\Event\SmsEvent:
+  sms_event_{1..10}:
+    mandatary: "@mandatary_<current()>"
+    coach: "@delphine_feuillard_coach"
+    date: <date_create()>
+    content: <sentence()>
+App\Entity\Event\TerminationEvent:
+  termination_event_{1..10}:
+    mandatary: "@mandatary_<current()>"
+    date: <date_create()>
+App\Entity\Event\TradeShortfallEvent:
+  trade_shortfall_event_{1..10}:
+    mandatary: "@mandatary_<current()>"
+    date: <date_create()>
+    daysSinceLastTrade: 90
+App\Entity\Event\TrainingProgramMissionEvent:
+  training_program_mission_event_{1..10}:
+    mandatary: "@mandatary_<current()>"
+    date: <date_create()>
+    mission: <word()>

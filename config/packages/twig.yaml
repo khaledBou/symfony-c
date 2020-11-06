@@ -1,0 +1,13 @@
+twig:
+    default_path: '%kernel.project_dir%/templates'
+    debug: '%kernel.debug%'
+    strict_variables: '%kernel.debug%'
+    date:
+        format: 'd/m/Y'
+        timezone: 'Europe/Paris'
+    number_format:
+        decimals: 2
+        decimal_point: ','
+        thousands_separator: ' '
+    form_themes:
+        - 'form/material_admin_layout.html.twig'

@@ -1,0 +1,5 @@
+<div class="listview__heading">
+    <i class="zmdi zmdi-mail-send"></i>
+    {{ "E-mailing envoyé : %subject%"|trans({'%subject%': event.subject}) }}
+</div>
+<p>{{ event.content|nl2br }}</p>

@@ -1,0 +1,64 @@
+App\Entity\Indicator\AdministrativeIndicator:
+  administrative_indicator_{1..10}:
+    mandatary: "@mandatary_<current()>"
+    key: administrative
+    validRsac: true
+    validSiret: false
+    validRcp: true
+    validCci: true
+    validTva: true
+    validPortage: true
+App\Entity\Indicator\BooleanIndicator:
+  pack_demarrage_indicator_{1..10}:
+    mandatary: "@mandatary_<current()>"
+    key: pack_demarrage
+    value: true
+  espace_pro_indicator_{1..10}:
+    mandatary: "@mandatary_<current()>"
+    key: espace_pro
+    value: true
+  etudes_de_marche_indicator_{1..10}:
+    mandatary: "@mandatary_<current()>"
+    key: etudes_de_marche
+    value: true
+  zone_prospection_indicator_{1..10}:
+    mandatary: "@mandatary_<current()>"
+    key: zone_prospection
+    value: true
+  planning_prospection_indicator_{1..10}:
+    mandatary: "@mandatary_<current()>"
+    key: planning_prospection
+    value: true
+  outils_indicator_{1..10}:
+    mandatary: "@mandatary_<current()>"
+    key: outils
+    value: true
+  site_indicator_{1..10}:
+    mandatary: "@mandatary_<current()>"
+    key: site
+    value: true
+  autonome_publication_indicator_{1..10}:
+    mandatary: "@mandatary_<current()>"
+    key: autonome_publication
+    value: true
+  suspended_indicator_{1..10}:
+    mandatary: "@mandatary_<current()>"
+    key: suspended
+    value: false
+  resigned_indicator_{1..10}:
+    mandatary: "@mandatary_<current()>"
+    key: resigned
+    value: false
+  unpaid_indicator_{1..10}:
+    mandatary: "@mandatary_<current()>"
+    key: unpaid
+    value: true
+App\Entity\Indicator\TrainingProgramIndicator:
+  booster_indicator_{1..10}:
+    mandatary: "@mandatary_<current()>"
+    key: booster
+    completedMissions:
+      - Booster 1
+      - Booster 2
+      - Booster 3
+      - Booster 4

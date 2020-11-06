@@ -1,0 +1,12 @@
+.header,
+.login__block__header,
+.login__block__btn,
+.top-menu {
+  background-color: #aecc1c;
+}
+
+.navigation__sub--active > a,
+.navigation__active > a,
+.navigation__active:before {
+  color: #aecc1c;
+}

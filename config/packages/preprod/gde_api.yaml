@@ -1,0 +1,4 @@
+parameters:
+    gde_api_url:      'http://preprod.evenement.proprietes-privees.com/api'
+    gde_api_user:     'api'
+    gde_api_password: 'cT49fkS4sAYMn8uH'

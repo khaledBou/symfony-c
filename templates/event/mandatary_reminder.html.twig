@@ -1,0 +1,14 @@
+<div class="listview__heading">
+    {% set ways = [
+        "SMS"|trans,
+        "e-mail"|trans,
+    ] %}
+    {% if event.sent %}
+        <i class="zmdi zmdi-alarm-check"></i>
+        {{ ways[event.way] is defined ? "Relance envoyée au négociateur par %way%"|trans({'%way%': ways[event.way]}) : "Relance envoyée au négociateur"|trans }}
+    {% else %}
+        <i class="zmdi zmdi-alarm"></i>
+        {{ ways[event.way] is defined ? "Relance à envoyer au négociateur par %way%"|trans({'%way%': ways[event.way]}) : "Relance à envoyer au négociateur"|trans }}
+    {% endif %}
+</div>
+<p>{{ event.content|nl2br }}</p>

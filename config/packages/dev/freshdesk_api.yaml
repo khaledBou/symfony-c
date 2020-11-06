@@ -1,0 +1,3 @@
+parameters:
+    freshdesk_api_url:    'https://proprietes-privees.freshdesk.com/api/v2'
+    freshdesk_api_token:  'dsRtj4QDL0lPq4FqelY7'

@@ -1,0 +1,78 @@
+{% set administrative_documents = constant('App\\Entity\\User\\Mandatary::ADMINISTRATIVE_DOCUMENTS')[event.mandatary.contract] is defined ? constant('App\\Entity\\User\\Mandatary::ADMINISTRATIVE_DOCUMENTS')[event.mandatary.contract] : ['rsac', 'siret', 'rcp', 'cci', 'tva', 'portage'] %}
+
+<div class="listview__heading">
+    <i class="zmdi zmdi-swap"></i>
+    {{ event_config.name }}
+</div>
+{% if 'rsac' in administrative_documents %}
+    <p>
+        {{ "RSAC :"|trans }}
+        {% if event.oldValidRsac != event.newValidRsac %}
+            {{ (event.oldValidRsac ? "valide" : "invalide")|trans }}
+            <i class="zmdi zmdi-forward"></i>
+            <strong>{{ (event.newValidRsac ? "valide" : "invalide")|trans }}</strong>
+        {% else %}
+            {{ (event.newValidRsac ? "valide" : "invalide")|trans }}
+        {% endif %}
+    </p>
+{% endif %}
+{% if 'siret' in administrative_documents %}
+    <p>
+        {{ "SIRET :"|trans }}
+        {% if event.oldValidSiret != event.newValidSiret %}
+            {{ (event.oldValidSiret ? "valide" : "invalide")|trans }}
+            <i class="zmdi zmdi-forward"></i>
+            <strong>{{ (event.newValidSiret ? "valide" : "invalide")|trans }}</strong>
+        {% else %}
+            {{ (event.newValidSiret ? "valide" : "invalide")|trans }}
+        {% endif %}
+    </p>
+{% endif %}
+{% if 'rcp' in administrative_documents %}
+    <p>
+        {{ "RCP :"|trans }}
+        {% if event.oldValidRcp != event.newValidRcp %}
+            {{ (event.oldValidRcp ? "valide" : "invalide")|trans }}
+            <i class="zmdi zmdi-forward"></i>
+            <strong>{{ (event.newValidRcp ? "valide" : "invalide")|trans }}</strong>
+        {% else %}
+            {{ (event.newValidRcp ? "valide" : "invalide")|trans }}
+        {% endif %}
+    </p>
+{% endif %}
+{% if 'cci' in administrative_documents %}
+    <p>
+        {{ "Habilitation CCI :"|trans }}
+        {% if event.oldValidCci != event.newValidCci %}
+            {{ (event.oldValidCci ? "valide" : "invalide")|trans }}
+            <i class="zmdi zmdi-forward"></i>
+            <strong>{{ (event.newValidCci ? "valide" : "invalide")|trans }}</strong>
+        {% else %}
+            {{ (event.newValidCci ? "valide" : "invalide")|trans }}
+        {% endif %}
+    </p>
+{% endif %}
+{% if 'tva' in administrative_documents %}
+    <p>
+        {{ "Numéro de TVA :"|trans }}
+        {% if event.oldValidTva != event.newValidTva %}
+            {{ (event.oldValidTva ? "valide" : "invalide")|trans }}
+            <i class="zmdi zmdi-forward"></i>
+            <strong>{{ (event.newValidTva ? "valide" : "invalide")|trans }}</strong>
+        {% else %}
+            {{ (event.newValidTva ? "valide" : "invalide")|trans }}
+        {% endif %}
+    </p>
+{% endif %}
+{% if 'portage' in administrative_documents %}
+    <p>
+        {{ "Convention d'adhésion ou contrat de portage :"|trans }}
+        {% if event.oldValidPortage != event.newValidPortage %}
+            {{ (event.oldValidPortage ? "valide" : "invalide")|trans }}
+            <i class="zmdi zmdi-forward"></i>
+            <strong>{{ (event.newValidPortage ? "valide" : "invalide")|trans }}</strong>
+        {% else %}
+            {{ (event.newValidPortage ? "valide" : "invalide")|trans }}
+        {% endif %}
+    </p>
+{% endif %}

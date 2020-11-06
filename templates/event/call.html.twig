@@ -1,0 +1,5 @@
+<div class="listview__heading">
+    <i class="zmdi zmdi-phone"></i>
+    {{ (event.incoming ? "Appel reçu" : "Appel émis")|trans }}
+</div>
+<p>{{ event.report|nl2br }}</p>

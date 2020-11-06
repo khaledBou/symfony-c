@@ -1,0 +1,9 @@
+# @see https://github.com/knpuniversity/oauth2-client-bundle#configuration
+knpu_oauth2_client:
+    clients:
+        keycloak_pp:
+            auth_server_url: https://login.proprietes-privees.com/auth
+        keycloak_ir:
+            auth_server_url: https://login.immo-reseau.com/auth
+        keycloak_rz:
+            auth_server_url: https://login.rezoximo.com/auth

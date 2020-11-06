@@ -1,0 +1,9 @@
+<div class="listview__heading">
+    <i class="zmdi zmdi-swap"></i>
+    {{ event_config.name }}
+</div>
+<p>
+    {{ event.oldPack is null ? "NC"|trans : event.oldPack }}
+    <i class="zmdi zmdi-forward"></i>
+    <strong>{{ event.newPack is null ? "NC"|trans : event.newPack }}</strong>
+</p>

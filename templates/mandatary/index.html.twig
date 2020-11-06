@@ -1,0 +1,406 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ "%s > %s"|format(app_name, "Négociateurs"|trans) }}{% endblock %}
+{% block page_title %}
+    <i class="zmdi zmdi-accounts-list"></i> {{ "Négociateurs"|trans }}
+{% endblock %}
+
+{% block content %}
+    <section class="content content--full">
+        <div class="card filters">
+            <div class="card-body">
+                <h4 class="card-title">
+                    {{ "Recherche"|trans }}
+                </h4>
+                <!-- Filtre sur le négociateur -->
+                <div class="row">
+                    <label class="col-sm-4 col-form-label" for="filters-mandatary">{{ "Négociateur"|trans }}</label>
+                    <div class="col-sm-8">
+                        <div class="form-group">
+                            <input name="filters_mandatary" id="filters-mandatary" type="text" class="form-control" placeholder="{{ "nom, prénom, téléphone, e-mail, ville de secteur, …"|trans }}">
+                            <i class="form-group__bar"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="collapse" id="more-filters">
+                    <!-- Filtre sur l'animateur -->
+                    <div class="row">
+                        <label class="col-sm-4 col-form-label" for="filters-animator">{{ "Animateur"|trans }}</label>
+                        <div class="col-sm-8">
+                            <div class="form-group">
+                                <select name="filters_animator" id="filters-animator" data-placeholder="{{ "peu importe"|trans }}" data-allow-clear="true">
+                                    <option value="" selected disabled></option>
+                                    {% for animator in animators %}
+                                        <option value="{{ animator.email|hash }}" {{ animator.id == app.user.id ? 'selected' }}>{{ animator }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Filtre sur le coach -->
+                    <div class="row">
+                        <label class="col-sm-4 col-form-label" for="filters-coach">{{ "Coach"|trans }}</label>
+                        <div class="col-sm-8">
+                            <div class="form-group">
+                                <select name="filters_coach" id="filters-coach" data-placeholder="{{ "peu importe"|trans }}" data-allow-clear="{{ is_coach_filter_enabled ? 'true' : 'false' }}">
+                                    <option value="" selected disabled></option>
+                                    {% for coach in coaches %}
+                                        {% if is_coach_filter_enabled %}
+                                            <option value="{{ coach.email|hash }}" {{ coach.id == app.user.id ? 'selected' }}>{{ coach }}</option>
+                                        {% else %}
+                                            {% if coach.id == app.user.id %}
+                                                <option value="{{ coach.email|hash }}" selected>{{ coach }}</option>
+                                            {% endif %}
+                                        {% endif %}
+                                    {% endfor %}
+                                </select>
+                                <small>
+                                    {% if is_coach_filter_enabled %}
+                                        <a href="{{ path('mandatary_index', {whichOnes: 'mes-negociateurs'}) }}">
+                                            {{ "Rechercher parmi mes négociateurs uniquement"|trans }}
+                                        </a>
+                                    {% else %}
+                                        <a href="{{ path('mandatary_index', {whichOnes: 'tous-les-negociateurs'}) }}">
+                                            {{ "Rechercher également parmi les négociateurs des autres coachs"|trans }}
+                                        </a>
+                                    {% endif %}
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Filtres sur l'état de suivi, le besoin d'accompagnement et le potentiel commercial -->
+                    {% set filters = {
+                        support_status: "État de suivi"|trans,
+                        care_level: "Besoin d'accompagnement"|trans,
+                        potential: "Potentiel commercial"|trans,
+                    } %}
+                    {% for filter_id, filter_label in filters %}
+                        <div class="row">
+                            <label class="col-sm-4 col-form-label">{{ filter_label }}</label>
+                            <div class="col-sm-8">
+                                <div class="form-group">
+                                    <div class="btn-group btn-group--colors btn-group-toggle" data-toggle="buttons">
+                                        {% if 'support_status' == filter_id %}
+                                            {% set levels = [
+                                                ['danger', "mauvais"|trans, constant('App\\Entity\\User\\Mandatary::SUPPORT_STATUS_BAD')],
+                                                ['warning', "moyen"|trans, constant('App\\Entity\\User\\Mandatary::SUPPORT_STATUS_FAIR')],
+                                                ['success', "bon"|trans, constant('App\\Entity\\User\\Mandatary::SUPPORT_STATUS_GOOD')],
+                                            ] %}
+                                        {% elseif 'care_level' == filter_id %}
+                                            {% set levels = [
+                                                ['danger', "intensif"|trans, constant('App\\Entity\\User\\Mandatary::CARE_LEVEL_HIGH')],
+                                                ['warning', "modéré"|trans, constant('App\\Entity\\User\\Mandatary::CARE_LEVEL_MEDIUM')],
+                                                ['success', "léger"|trans, constant('App\\Entity\\User\\Mandatary::CARE_LEVEL_LOW')],
+                                            ] %}
+                                        {% elseif 'potential' == filter_id %}
+                                            {% set levels = [
+                                                ['danger', "très faible"|trans, constant('App\\Entity\\User\\Mandatary::POTENTIAL_VERY_LOW')],
+                                                ['warning', "faible"|trans, constant('App\\Entity\\User\\Mandatary::POTENTIAL_LOW')],
+                                                ['info', "moyen"|trans, constant('App\\Entity\\User\\Mandatary::POTENTIAL_MEDIUM')],
+                                                ['primary', "haut"|trans, constant('App\\Entity\\User\\Mandatary::POTENTIAL_HIGH')],
+                                                ['success', "très haut"|trans, constant('App\\Entity\\User\\Mandatary::POTENTIAL_VERY_HIGH')],
+                                            ] %}
+                                        {% else %}
+                                            {% set levels = [] %}
+                                        {% endif %}
+                                        <label class="btn active"
+                                               title="{{ "peu importe"|trans }}"
+                                               data-toggle="tooltip"
+                                               data-placement="top"
+                                        >
+                                            <input name="{{ 'filters_%s'|format(filter_id) }}" value="" type="radio" autocomplete="off" checked>
+                                        </label>
+                                        {% for level in levels %}
+                                            <label class="btn {{ level.0 is not null ? 'bg-%s'|format(level.0) }}"
+                                                   title="{{ level.1 }}"
+                                                   data-toggle="tooltip"
+                                                   data-placement="top"
+                                            >
+                                                <input name="{{ 'filters_%s'|format(filter_id) }}" value="{{ level.2 }}" type="radio" autocomplete="off">
+                                            </label>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                    <!-- Filtre sur l'autonomie en publication -->
+                    <div class="row">
+                        <label class="col-sm-4 col-form-label">{{ "Publication"|trans }}</label>
+                        <div class="col-sm-8">
+                            <div class="form-group">
+                                <div class="checkbox checkbox--inline">
+                                    <input name="filters_autonome_publication" type="checkbox" id="filters-autonome-publication">
+                                    <label class="checkbox__label" for="filters-autonome-publication">{{ "Autonome en publication"|trans }}</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Filtre sur la date d'entrée dans le réseau -->
+                    <div class="row">
+                        <label class="col-sm-4 col-form-label">{{ "Date d'entrée dans le réseau"|trans }}</label>
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label for="filters-begin-date-from">{{ "à partir du"|trans }}</label>
+                                <input name="filters_begin_date_from" id="filters-begin-date-from" type="text" class="form-control input-mask" data-mask="00/00/0000" data-mask-clearifnotmatch="true" placeholder="{{ "jj/mm/aaaa"|trans }}">
+                                <i class="form-group__bar"></i>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label for="filters-begin-date-to">{{ "jusqu'au"|trans }}</label>
+                                <input name="filters_begin_date_to" id="filters-begin-date-to" type="text" class="form-control input-mask" data-mask="00/00/0000" data-mask-clearifnotmatch="true" placeholder="{{ "jj/mm/aaaa"|trans }}">
+                                <i class="form-group__bar"></i>
+                            </div>
+                        </div>
+                    </div>
+                    {% set filters = {
+                        trades: "Nombre de mandats en cours"|trans,
+                        compromises: "Nombre de compromis"|trans,
+                        sales: "Nombre de ventes"|trans,
+                    } %}
+                    <!-- Filtres sur le nombre de mandats, de compromis et de ventes -->
+                    {% for filter_id, filter_label in filters %}
+                        <div class="row">
+                            <label class="col-sm-4 col-form-label">{{ filter_label }}</label>
+                            <div class="col-sm-8">
+                                <div class="form-group">
+                                    <div class="radio radio--inline">
+                                        <input name="{{ 'filters_%s_count'|format(filter_id) }}" value="-" type="radio" id="{{ 'filters-%s-count-all'|format(filter_id) }}" checked>
+                                        <label class="radio__label" for="{{ 'filters-%s-count-all'|format(filter_id) }}">{{ "peu importe"|trans }}</label>
+                                    </div>
+                                    <div class="radio radio--inline">
+                                        <input name="{{ 'filters_%s_count'|format(filter_id) }}" value="-5" type="radio" id="{{ 'filters-%s-count-between-0-and-5'|format(filter_id) }}">
+                                        <label class="radio__label" for="{{ 'filters-%s-count-between-0-and-5'|format(filter_id) }}">{{ "de %min% à %max%"|trans({'%min%': 0, '%max%': 5}) }}</label>
+                                    </div>
+                                    <div class="radio radio--inline">
+                                        <input name="{{ 'filters_%s_count'|format(filter_id) }}" value="6-10" type="radio" id="{{ 'filters-%s-count-between-6-and-10'|format(filter_id) }}">
+                                        <label class="radio__label" for="{{ 'filters-%s-count-between-6-and-10'|format(filter_id) }}">{{ "de %min% à %max%"|trans({'%min%': 6, '%max%': 10}) }}</label>
+                                    </div>
+                                    <div class="radio radio--inline">
+                                        <input name="{{ 'filters_%s_count'|format(filter_id) }}" value="11-" type="radio" id="{{ 'filters-%s-count-more-than-10'|format(filter_id) }}">
+                                        <label class="radio__label" for="{{ 'filters-%s-count-more-than-10'|format(filter_id) }}">{{ "plus de %min%"|trans({'%min%': 10}) }}</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                    {% set filters = {
+                        trade: "aucun mandat depuis %days% jours"|trans({'%days%': constant('App\\Service\\MandataryHelper::TRADE_SHORTFALL_DELAY')}),
+                        compromise: "aucun compromis depuis %days% jours"|trans({'%days%': constant('App\\Service\\MandataryHelper::COMPROMISE_SHORTFALL_DELAY')}),
+                        sale: "aucune vente depuis %days% jours"|trans({'%days%': constant('App\\Service\\MandataryHelper::SALE_SHORTFALL_DELAY')}),
+                    } %}
+                    <!-- Filtres sur l'absence de mandat, de compromis et de ventes récents -->
+                    <div class="row">
+                        <label class="col-sm-4 col-form-label">{{ "Activité"|trans }}</label>
+                        <div class="col-sm-8">
+                            <div class="form-group">
+                                {% for filter_id, filter_label in filters %}
+                                    <div class="checkbox checkbox--inline">
+                                        <input name="{{ 'filters_%s_shortfall'|format(filter_id) }}" type="checkbox" id="{{ 'filters-%s-shortfall'|format(filter_id) }}">
+                                        <label class="checkbox__label" for="{{ 'filters-%s-shortfall'|format(filter_id) }}">{{ filter_label }}</label>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <button id="show-more-filters" class="btn btn-sm btn-primary" type="button">
+                    <i class="zmdi zmdi-plus-circle-o"></i> {{ "plus de filtres"|trans }}
+                </button>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title sr-only">
+                    {{ "Négociateurs"|trans }}
+                </h4>
+                <div class="table-responsive">
+                    <table class="table table-bordered">
+                        <thead class="thead-default">
+                            <tr>
+                                <th>{{ "Civilité"|trans }}</th>
+                                <th>{{ "Nom"|trans }}</th>
+                                <th>{{ "E-mail"|trans }}</th>
+                                <th>{{ "Téléphone"|trans }}</th>
+                                <th>{{ "Date d'entrée"|trans }}</th>
+                                <th>{{ "Secteur"|trans }}</th>
+                                <th>{{ "Animateur"|trans }}</th>
+                                <th>{{ "Coach"|trans }}</th>
+                                <th>{{ "Nombre de contacts avec le coach"|trans }}</th>
+                                <th>{{ "État de suivi"|trans }}</th>
+                                <th>{{ "Besoin d'accompagnement"|trans }}</th>
+                                <th>{{ "Potentiel commercial"|trans }}</th>
+                                <th>{{ "Autonome en publication"|trans }}</th>
+                                <th data-title="{{ "Mandats en cours"|trans }}">{{ "Mandats en cours"|trans }}</th>
+                                <th data-title="{{ "Compromis"|trans }}"{{ "Compromis"|trans }}</th>
+                                <th data-title="{{ "Ventes"|trans }}"{{ "Ventes"|trans }}</th>
+                                <th>{{ "Absence de mandat récent"|trans }}</th>
+                                <th>{{ "Absence de compromis récent"|trans }}</th>
+                                <th>{{ "Absence de vente récente"|trans }}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for mandatary in mandataries %}
+                                <tr
+                                    {% if mandatary.suspendedOrResigned %}
+                                        class="table-danger"
+                                        title="{{ "Suspendu ou résilié"|trans }}"
+                                        data-toggle="tooltip"
+                                        data-placement="top"
+                                    {% endif %}
+                                >
+                                    <td>
+                                        {{ mandatary.civility }}
+                                    </td>
+                                    <td data-search="{{ mandatary }}">
+                                        <a href="{{ path('mandatary_show', {slug: mandatary.slug}) }}" target="_blank">
+                                            {{ '%s %s'|format(mandatary.lastName, mandatary.firstName) }}
+                                            {% if mandatary in animators %}
+                                                <i class="zmdi zmdi-face"
+                                                   title="{{ "animateur"|trans }}"
+                                                   data-toggle="tooltip"
+                                                   data-placement="right"
+                                                ></i>
+                                            {% endif %}
+                                        </a>
+                                    </td>
+                                    <td data-search="{{ mandatary.email }}">
+                                        {{ mandatary.email }}
+                                    </td>
+                                    <td data-search="{{ mandatary.phone }}">
+                                        {{ mandatary.phone }}
+                                    </td>
+                                    <td data-sort="{{ mandatary.beginDate|date('U') }}" data-search="{{ mandatary.beginDate|date('U') }}">
+                                        {{ mandatary.beginDate|date }}
+                                    </td>
+                                    <td data-sort="{{ mandatary.zipCode }}" data-search="{{ "%s %s"|format(mandatary.city, mandatary.zipCode) }}">
+                                        {{ "%s (%s)"|format(mandatary.city, mandatary.zipCode) }}
+                                    </td>
+                                    <td data-search="{{ mandatary.animator is not null ? mandatary.animator.email|hash }}">
+                                        {{ mandatary.animator }}
+                                    </td>
+                                    <td data-search="{{ mandatary.coach is not null ? mandatary.coach.email|hash }}">
+                                        {{ mandatary.coach }}
+                                    </td>
+                                    <td>
+                                        {{ mandatary.contactsCount }}
+                                    </td>
+                                    <td data-sort="{{ mandatary.coach is null ? constant('App\\Entity\\User\\Mandatary::SUPPORT_STATUS_BAD') : mandatary.supportStatus }}" data-search="{{ mandatary.coach is null ? constant('App\\Entity\\User\\Mandatary::SUPPORT_STATUS_BAD') : mandatary.supportStatus }}">
+                                        {% if mandatary.coach is null %}
+                                            <span class="badge badge-danger">
+                                                {{ "pas de coach"|trans }}
+                                            </span>
+                                        {% else %}
+                                            {% set badges = [
+                                                ['danger', "mauvais"|trans, "dernier contact pris il y a plus de 2 mois"|trans],
+                                                ['warning', "moyen"|trans, "dernier contact pris il y a moins de 2 mois"|trans],
+                                                ['success', "bon"|trans, "dernier contact pris il y a moins d'1 mois"|trans],
+                                            ] %}
+                                            {% if badges[mandatary.supportStatus] is defined %}
+                                                <span class="{{ 'badge badge-%s'|format(badges[mandatary.supportStatus].0) }}"
+                                                      title="{{ badges[mandatary.supportStatus].2 }}"
+                                                      data-toggle="tooltip"
+                                                      data-placement="right"
+                                                >
+                                                    {{ badges[mandatary.supportStatus].1 }}
+                                                </span>
+                                            {% endif %}
+                                        {% endif %}
+                                    </td>
+                                    <td data-sort="{{ mandatary.careLevel }}" data-search="{{ mandatary.careLevel }}">
+                                        {% set badges = [
+                                            ['success', "léger"|trans],
+                                            ['warning', "modéré"|trans],
+                                            ['danger', "intensif"|trans],
+                                        ] %}
+                                        {% if badges[mandatary.careLevel] is defined %}
+                                            <span class="{{ 'badge badge-%s'|format(badges[mandatary.careLevel].0) }}">
+                                                {{ badges[mandatary.careLevel].1 }}
+                                            </span>
+                                        {% endif %}
+                                    </td>
+                                    <td data-sort="{{ mandatary.potential }}" data-search="{{ mandatary.potential }}">
+                                        {% set badges = [
+                                            ['danger', "très faible"|trans],
+                                            ['warning', "faible"|trans],
+                                            ['info', "moyen"|trans],
+                                            ['primary', "haut"|trans],
+                                            ['success', "très haut"|trans],
+                                        ] %}
+                                        {% if badges[mandatary.potential] is defined %}
+                                            <span class="{{ 'badge badge-%s'|format(badges[mandatary.potential].0) }}">
+                                                {{ badges[mandatary.potential].1 }}
+                                            </span>
+                                        {% endif %}
+                                    </td>
+                                    <td data-search="{{ mandatary.isAutonomePublication ? 'yes' : 'no' }}">
+                                        {{ mandatary.isAutonomePublication ? "oui"|trans : "non"|trans }}
+                                    </td>
+                                    <td data-search="{{ mandatary.tradesCount }}">
+                                        {{ mandatary.tradesCount }}
+                                    </td>
+                                    <td data-search="{{ mandatary.compromisesCount }}">
+                                        {{ mandatary.compromisesCount }}
+                                    </td>
+                                    <td data-search="{{ mandatary.salesCount }}">
+                                        {{ mandatary.salesCount != mandatary.salesCount|round ? mandatary.salesCount|number_format(2, ',', ' ') : mandatary.salesCount }}
+                                    </td>
+                                    <td data-search="{{ mandatary.hasTradeShortfall ? 'yes' : 'no' }}">
+                                        {{ mandatary.hasTradeShortfall ? "oui"|trans : "non"|trans }}
+                                    </td>
+                                    <td data-search="{{ mandatary.hasCompromiseShortfall ? 'yes' : 'no' }}">
+                                        {{ mandatary.hasCompromiseShortfall ? "oui"|trans : "non"|trans }}
+                                    </td>
+                                    <td data-search="{{ mandatary.hasSaleShortfall ? 'yes' : 'no' }}">
+                                        {{ mandatary.hasSaleShortfall ? "oui"|trans : "non"|trans }}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <th>{{ "Civilité"|trans }}</th>
+                                <th>{{ "Nom"|trans }}</th>
+                                <th>{{ "E-mail"|trans }}</th>
+                                <th>{{ "Téléphone"|trans }}</th>
+                                <th>{{ "Date d'entrée"|trans }}</th>
+                                <th>{{ "Secteur"|trans }}</th>
+                                <th>{{ "Animateur"|trans }}</th>
+                                <th>{{ "Coach"|trans }}</th>
+                                <th>{{ "Nombre de contacts avec le coach"|trans }}</th>
+                                <th>{{ "État de suivi"|trans }}</th>
+                                <th>{{ "Besoin d'accompagnement"|trans }}</th>
+                                <th>{{ "Potentiel commercial"|trans }}</th>
+                                <th>{{ "Autonome en publication"|trans }}</th>
+                                <th>{{ "Mandats en cours"|trans }}</th>
+                                <th>{{ "Compromis"|trans }}</th>
+                                <th>{{ "Ventes"|trans }}</th>
+                                <th>{{ "Absence de mandat récent"|trans }}</th>
+                                <th>{{ "Absence de compromis récent"|trans }}</th>
+                                <th>{{ "Absence de vente récente"|trans }}</th>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}
+
+{% block stylesheets %}
+    <!-- Vendors: Forms -->
+    <link rel="stylesheet" href="/assets/vendors/select2/css/select2.min.css">
+{% endblock %}
+
+{% block javascripts %}
+    <!-- Vendors: Data tables -->
+    <script src="/assets/vendors/datatables/jquery.dataTables.min.js"></script>
+    <script src="/assets/js/datatables-accent-neutralise.js"></script>
+    <!-- Vendors: Forms -->
+    <script src="/assets/vendors/jquery-mask-plugin/jquery.mask.min.js"></script>
+    <script src="/assets/vendors/select2/js/select2.full.min.js"></script>
+    <script src="/assets/vendors/moment/moment.min.js"></script>
+    <!-- Custom script -->
+    <script src="/assets/js/mandatary-index.js"></script>
+{% endblock %}

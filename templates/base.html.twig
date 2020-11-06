@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        {% if app_google_analytics_id is not empty %}
+            <!-- Global site tag (gtag.js) - Google Analytics -->
+            <script async src="https://www.googletagmanager.com/gtag/js?id={{ app_google_analytics_id }}"></script>
+            <script>
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){dataLayer.push(arguments);}
+                gtag('js', new Date());
+
+                gtag('config', '{{ app_google_analytics_id }}');
+            </script>
+        {% endif %}
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+        <title>{% block title %}{{ app_name }}{% endblock %}</title>
+        <link rel="shortcut icon" href="{{ '/assets/img/favicon.%s.ico'|format(app_network_id) }}">
+
+        <!-- Vendor styles -->
+        <link rel="stylesheet" href="/assets/vendors/material-design-iconic-font/css/material-design-iconic-font.min.css">
+        <link rel="stylesheet" href="/assets/vendors/animate.css/animate.min.css">
+        <link rel="stylesheet" href="/assets/vendors/jquery-scrollbar/jquery.scrollbar.css">
+        {% block stylesheets %}{% endblock %}
+        <!-- App styles -->
+        <link rel="stylesheet" href="/assets/css/app.min.css">
+        <link rel="stylesheet" href="/assets/css/coaching.css">
+        <link rel="stylesheet" href="{{ '/assets/css/coaching.%s.css'|format(app_network_id) }}">
+    </head>
+    <body>
+        {% block body %}
+            <main class="main">
+                <div class="page-loader">
+                    <div class="page-loader__spinner">
+                        <svg viewBox="25 25 50 50">
+                            <circle cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10" />
+                        </svg>
+                    </div>
+                </div>
+                <header class="header">
+                    <div class="header__logo">
+                        <h1>{% block page_title %}{% endblock %}</h1>
+                    </div>
+                    <ul class="top-nav">
+                        <li>
+                            <a href="{{ path('mandatary_index') }}" title="{{ "Négociateurs"|trans }}">
+                                <i class="zmdi zmdi-accounts-list"></i>
+                            </a>
+                        </li>
+                        {{ render(controller('App\\Controller\\NotificationController::li')) }}
+                        <li>
+                            <a href="{{ path('page_doc') }}" title="{{ "Guide utilisateur"|trans }}">
+                                <i class="zmdi zmdi-help-outline"></i>
+                            </a>
+                        </li>
+                        {% if app.user %}
+                            <li>
+                                <a href="{{ path('logout') }}" title="{{ "Me déconnecter"|trans }}">
+                                    <i class="zmdi zmdi-run"></i>
+                                </a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </header>
+                {% block content %}{% endblock %}
+            </main>
+        {% endblock %}
+
+        <!-- Javascript -->
+        <!-- Vendors -->
+        <script src="/assets/vendors/jquery/jquery.min.js"></script>
+        <script src="/assets/vendors/popper.js/popper.min.js"></script>
+        <script src="/assets/vendors/bootstrap/js/bootstrap.min.js"></script>
+        <script src="/assets/vendors/jquery-scrollbar/jquery.scrollbar.min.js"></script>
+        <script src="/assets/vendors/jquery-scrollLock/jquery-scrollLock.min.js"></script>
+        <script src="/assets/vendors/bootstrap-notify/bootstrap-notify.min.js"></script>
+        {% block javascripts %}{% endblock %}
+        <!-- App functions and actions -->
+        <script src="/assets/js/coaching.js"></script>
+        <script src="/assets/js/coaching-notifications.js"></script>
+        <script src="/assets/js/app.js"></script>
+        <script>
+            // Translations
+            var messages = {
+                changes_saved: "{{ "Modifications sauvegardées."|trans }}",
+                changes_not_saved: "{{ "Erreur de sauvegarde des modifications."|trans }}",
+                changes_not_saved_logged_out: "{{ "Erreur de sauvegarde des modifications. Peut-être avez-vous été déconnecté ?"|trans }}",
+                notifications_not_loaded: "{{ "Erreur de chargement des notifications."|trans }}",
+                notifications_not_loaded_logged_out: "{{ "Erreur de chargement des notifications. Peut-être avez-vous été déconnecté ?"|trans }}",
+                notifications_not_deleted: "{{ "Erreur de suppression des notifications."|trans }}",
+                notifications_not_deleted_logged_out: "{{ "Erreur de suppression des notifications. Peut-être avez-vous été déconnecté ?"|trans }}",
+                notifications_not_marked_as_read: "{{ "Les notifications n'ont pas pu être marquées comme lues."|trans }}",
+                notifications_not_marked_as_read_logged_out: "{{ "Les notifications n'ont pas pu être marquées comme lues. Peut-être avez-vous été déconnecté ?"|trans }}",
+                please_confirm: "{{ "Confirmer ?"|trans }}",
+                emailing: "{{ "E-mailing"|trans }}",
+            };
+
+            // Paramètres
+            var params = {
+                notifications_url: "{{ path('notification_li') }}",
+                mandatary_emailing_url: "{{ path('mandatary_emailing') }}",
+            };
+
+            // Flashbags
+            $(document).ready(function() {
+                {% for type, messages in app.flashes %}
+                    {% for message in messages %}
+                        $.notify({
+                            message: "{{ message }}",
+                        }, $.extend({}, defaultNotificationsSettings, {
+                            delay: {{ type in ['warning', 'error'] ? 0 : 10000 }},
+                        }));
+                    {% endfor %}
+                {% endfor %}
+            });
+        </script>
+    </body>
+</html>

@@ -1,0 +1,527 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ "%s > %s > %s"|format(app_name, "Négociateurs"|trans, mandatary) }}{% endblock %}
+{% block page_title %}
+    <a href="{{ path('mandatary_index') }}">
+        <i class="zmdi zmdi-accounts-list"></i> {{ "Négociateurs"|trans }}
+    </a>
+    /
+    {{ mandatary }}
+{% endblock %}
+
+{% block content %}
+    <section class="content content--full">
+        <header class="content__title">
+            <div class="actions">
+                <a class="actions__item zmdi zmdi-globe-alt"
+                   href="{{ mandatary.websiteUrl }}"
+                   title="{{ "Voir le mini-site"|trans }}"
+                   data-toggle="tooltip"
+                   data-placement="top"
+                   target="_blank"
+                ></a>
+                <a class="actions__item zmdi zmdi-account-circle"
+                   href="{{ mandatary.crmUrl }}"
+                   title="{{ "Voir dans le CRM"|trans }}"
+                   data-toggle="tooltip"
+                   data-placement="top"
+                   target="_blank"
+                ></a>
+                {% if freshdesk_url is not null and mandatary.freshdeskUserId is not null %}
+                    <a class="actions__item zmdi zmdi-help"
+                       href="{{ '%s/a/contacts/%s'|format(freshdesk_url, mandatary.freshdeskUserId) }}"
+                       title="{{ "Voir dans Freshdesk"|trans }}"
+                       data-toggle="tooltip"
+                       data-placement="top"
+                       target="_blank"
+                    ></a>
+                {% endif %}
+            </div>
+        </header>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="card text-center">
+                    {% if mandatary.avatar is not null %}
+                        <img src="{{ '/assets/avatar/%s'|format(mandatary.avatar) }}"
+                             class="team__img bg-white"
+                             alt="{{ "Photo de %mandatary%"|trans({'%mandatary%': mandatary}) }}"
+                             title="{{ mandatary }}"
+                             data-toggle="tooltip"
+                             data-placement="right"
+                        >
+                    {% endif %}
+                    <div class="card-body text-left">
+                        <h4 class="card-title text-center">
+                            {{ mandatary }}
+                            {% if mandatary.animatedMandataries is not empty %}
+                                <i class="zmdi zmdi-face"
+                                   title="{{ "animateur"|trans }}"
+                                   data-toggle="tooltip"
+                                   data-placement="right"
+                                ></i>
+                            {% endif %}
+                        </h4>
+                        <div class="card-badges">
+                            {% if indicators_forms.unpaid.vars.value.value is defined and indicators_forms.unpaid.vars.value.value %}
+                                <span class="badge badge-danger">{{ "impayé"|trans }}</span>
+                            {% endif %}
+                            {% if indicators_forms.suspended.vars.value.value is defined and indicators_forms.suspended.vars.value.value %}
+                                <span class="badge badge-danger">{{ "suspendu"|trans }}</span>
+                            {% endif %}
+                            {% if indicators_forms.resigned.vars.value.value is defined and indicators_forms.resigned.vars.value.value %}
+                                <span class="badge badge-danger">{{ "résilié"|trans }}</span>
+                            {% endif %}
+                        </div>
+                        <ul class="icon-list">
+                            {% set contracts = [
+                                "micro-entrepreneur"|trans,
+                                "agent commercial"|trans,
+                                "portage salarial"|trans,
+                                "concessionnaire"|trans,
+                            ] %}
+                            <li>
+                                <i class="zmdi zmdi-phone"></i>
+                                {{ mandatary.phone }}
+                            </li>
+                            <li>
+                                <i class="zmdi zmdi-email"></i>
+                                <a href="{{ 'mailto:%s'|format(mandatary.email) }}">{{ mandatary.email }}</a>
+                            </li>
+                            <li>
+                                <i class="zmdi zmdi-pin"></i>
+                                {{ "Ville de secteur : %city% (%zipcode%)"|trans({
+                                    '%city%': mandatary.city,
+                                    '%zipcode%': mandatary.zipCode
+                                }) }}
+                            </li>
+                            {% if mandatary.animator is not null %}
+                                <li>
+                                    <i class="zmdi zmdi-face"></i>
+                                    {% if mandatary.animator.enabled %}
+                                        {{ "Animateur : <a href=\"%link%\">%animator%</a>"|trans({
+                                            '%link%': path('mandatary_show', {slug: mandatary.animator.slug}),
+                                            '%animator%': mandatary.animator,
+                                        })|raw }}
+                                    {% else %}
+                                        {{ "Animateur : <del>%animator%</del>"|trans({
+                                            '%animator%': mandatary.animator,
+                                        })|raw }}
+                                    {% endif %}
+                                </li>
+                            {% endif %}
+                            {% if mandatary.animatedMandataries is not empty %}
+                                {% set animatedMandataries %}
+                                    {% for animatedMandatary in mandatary.animatedMandataries %}
+                                        {% if animatedMandatary.enabled %}
+                                            {{ ("<a href=\"%link%\">%animated_mandatary%</a>"|trans({
+                                                '%link%': path('mandatary_show', {slug: animatedMandatary.slug}),
+                                                '%animated_mandatary%': animatedMandatary,
+                                            }) ~ (not loop.last ? ", "))|raw }}
+                                        {% else %}
+                                            {{ ("<del>%animated_mandatary%</del>"|trans({
+                                                '%animated_mandatary%': animatedMandatary,
+                                            }) ~ (not loop.last ? ", "))|raw }}
+                                        {% endif %}
+                                    {% endfor %}
+                                {% endset %}
+                                <li>
+                                    <i class="zmdi zmdi-accounts-alt"></i>
+                                    {{ "Animé(s) : %animated_mandataries%"|trans({'%animated_mandataries%': animatedMandataries})|raw }}
+                                </li>
+                            {% endif %}
+                            {% if mandatary.tutor is not null %}
+                                <li>
+                                    <i class="zmdi zmdi-accounts-alt"></i>
+                                    {% if mandatary.tutor.enabled %}
+                                        {{ "Tuteur : <a href=\"%link%\" title=\"du %start_date% au %end_date%\" data-toggle=\"tooltip\" data-placement=\"right\">%tutor%</a>"|trans({
+                                            '%link%': path('mandatary_show', {slug: mandatary.tutor.slug}),
+                                            '%start_date%': mandatary.tutoringStartDate|date,
+                                            '%end_date%': mandatary.tutoringEndDate|date,
+                                            '%tutor%': mandatary.tutor,
+                                        })|raw }}
+                                    {% else %}
+                                        {{ "Tuteur : <del title=\"du %start_date% au %end_date%\" data-toggle=\"tooltip\" data-placement=\"right\">%tutor%</del>"|trans({
+                                            '%start_date%': mandatary.tutoringStartDate|date,
+                                            '%end_date%': mandatary.tutoringEndDate|date,
+                                            '%tutor%': mandatary.tutor,
+                                        })|raw }}
+                                    {% endif %}
+                                </li>
+                            {% endif %}
+                            {% if mandatary.tutoredMandataries is not empty %}
+                                {% set tutoredMandataries %}
+                                    {% for tutoredMandatary in mandatary.tutoredMandataries %}
+                                        {% if tutoredMandatary.enabled %}
+                                            {{ ("<a href=\"%link%\" title=\"du %start_date% au %end_date%\" data-toggle=\"tooltip\" data-placement=\"right\">%tutored_mandatary%</a>"|trans({
+                                                '%link%': path('mandatary_show', {slug: tutoredMandatary.slug}),
+                                                '%start_date%': tutoredMandatary.tutoringStartDate|date,
+                                                '%end_date%': tutoredMandatary.tutoringEndDate|date,
+                                                '%tutored_mandatary%': tutoredMandatary,
+                                            }) ~ (not loop.last ? ", "))|raw }}
+                                        {% else %}
+                                            {{ ("<del title=\"du %start_date% au %end_date%\" data-toggle=\"tooltip\" data-placement=\"right\">%tutored_mandatary%</del>"|trans({
+                                                '%start_date%': tutoredMandatary.tutoringStartDate|date,
+                                                '%end_date%': tutoredMandatary.tutoringEndDate|date,
+                                                '%tutored_mandatary%': tutoredMandatary,
+                                            }) ~ (not loop.last ? ", "))|raw }}
+                                        {% endif %}
+                                    {% endfor %}
+                                {% endset %}
+                                <li>
+                                    <i class="zmdi zmdi-accounts-alt"></i>
+                                    {{ "Filleul(s) : %tutored_mandataries%"|trans({'%tutored_mandataries%': tutoredMandataries})|raw }}
+                                </li>
+                            {% endif %}
+                            <li>
+                                <i class="zmdi zmdi-calendar"></i>
+                                {% if mandatary.terminationDate is null %}
+                                    {{ "Date d'entrée dans le réseau : %beginDate%"|trans({
+                                        '%beginDate%': mandatary.beginDate|date,
+                                    }) }}
+                                {% else %}
+                                    {{ "Dates d'entrée et sortie du réseau : %beginDate% - %terminationDate%"|trans({
+                                        '%beginDate%': mandatary.beginDate|date,
+                                        '%terminationDate%': mandatary.terminationDate|date,
+                                    }) }}
+                                {% endif %}
+                            </li>
+                            <li>
+                                <i class="zmdi zmdi-grid"></i>
+                                {{ "Barème : %bareme%"|trans({
+                                    '%bareme%': mandatary.bareme,
+                                }) }}
+                            </li>
+                            <li>
+                                <i class="zmdi zmdi-assignment"></i>
+                                {{ "Contrat : %contract%"|trans({
+                                    '%contract%': contracts[mandatary.contract] is defined ? contracts[mandatary.contract] : "NC"|trans,
+                                }) }}
+                            </li>
+                            <li>
+                                <i class="zmdi zmdi-case"></i>
+                                {{ "Pack : %pack%"|trans({
+                                    '%pack%': mandatary.pack,
+                                }) }}
+                            </li>
+                            <li>
+                                <i class="zmdi zmdi-home"></i>
+                                {{ "Activité(s) : %activities%"|trans({
+                                    '%activities%': mandatary.activities|join(", "),
+                                }) }}
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">
+                            {{ mandatary.coach is not null ? "Suivi par %coach%"|trans({'%coach%': mandatary.coach.firstname}) : "Suivi"|trans }}
+                        </h4>
+                        <div class="card-badges">
+                            {% if mandatary.coach is null %}
+                                <span class="badge badge-danger">{{ "pas de coach"|trans }}</span>
+                            {% else %}
+                                {% set badges = [
+                                    ['danger', "mauvais"|trans, "dernier contact pris il y a plus de 2 mois"|trans],
+                                    ['warning', "moyen"|trans, "dernier contact pris il y a moins de 2 mois"|trans],
+                                    ['success', "bon"|trans, "dernier contact pris il y a moins d'1 mois"|trans],
+                                ] %}
+                                {% if badges[mandatary.supportStatus] is defined %}
+                                    <span class="{{ 'badge badge-%s'|format(badges[mandatary.supportStatus].0) }}"
+                                          title="{{ badges[mandatary.supportStatus].2 }}"
+                                          data-toggle="tooltip"
+                                          data-placement="right"
+                                    >
+                                        {{ badges[mandatary.supportStatus].1 }}
+                                    </span>
+                                {% endif %}
+                            {% endif %}
+                        </div>
+                        {{ form(mandatary_form) }}
+                    </div>
+                </div>
+                <div id="stats">
+                    <div class="card card--inverse widget-past-days">
+                        <div class="card-body">
+                            <h4 class="card-title"><i class="zmdi zmdi-chart"></i>  {{ "Statistiques"|trans }}</h4>
+                        </div>
+                        <div class="listview listview--inverse listview--striped">
+                            <div class="listview__item">
+                                <div class="widget-past-days__info">
+                                    <small>{{ "CA N / N-1 / N-2"|trans }}</small>
+                                    <h3>{{ "%s / %s / %s"|format(
+                                            mandatary.salesRevenueHistory[0] is defined and mandatary.salesRevenueHistory[0] is not null ? "%s€"|format(mandatary.salesRevenueHistory[0]|number_format(0)) : "-",
+                                            mandatary.salesRevenueHistory[1] is defined and mandatary.salesRevenueHistory[1] is not null ? "%s€"|format(mandatary.salesRevenueHistory[1]|number_format(0)) : "-",
+                                            mandatary.salesRevenueHistory[2] is defined and mandatary.salesRevenueHistory[2] is not null ? "%s€"|format(mandatary.salesRevenueHistory[2]|number_format(0)) : "-"
+                                        ) }}</h3>
+                                </div>
+                            </div>
+                            <div class="listview__item">
+                                <div class="widget-past-days__info">
+                                    <small>{{ "Honoraires agence moyens par vente"|trans }}</small>
+                                    <h3>{{ mandatary.salesCount > 0 ? "%s€"|format((mandatary.salesRevenue / mandatary.salesCount)|number_format(0)) : "aucune vente"|trans }}</h3>
+                                </div>
+                            </div>
+                            <div class="listview__item">
+                                <div class="widget-past-days__info">
+                                    <small>{{ "Nombre de connexions au CRM (dernière connexion)"|trans }}</small>
+                                    <h3>{{ "%s (%s)"|format(mandatary.crmLoginsCount, mandatary.lastCrmLoginDate is null ? "n.c."|trans : mandatary.lastCrmLoginDate|date) }}</h3>
+                                </div>
+                            </div>
+                            <div class="listview__item"
+                                 title="{{ "Comptabilise le nombre de rendez-vous et d'appels téléphoniques"|trans }}"
+                                 data-toggle="tooltip"
+                                 data-placement="right"
+                            >
+                                <div class="widget-past-days__info">
+                                    <small>{{ "Nombre de contacts avec le coach (depuis 2 mois)"|trans }}</small>
+                                    <h3>{{ "%s (%s)"|format(processed_stats.contacts_count, processed_stats.contacts_count_for_2_months) }}</h3>
+                                </div>
+                            </div>
+                            <div class="listview__item">
+                                <div class="widget-past-days__info">
+                                    {% if processed_stats.next_appointment is not null %}
+                                        <small>{{ "Prochain rendez-vous"|trans }}</small>
+                                        <h3>{{ processed_stats.next_appointment.date|date }}</h3>
+                                    {% else %}
+                                        <small>{{ "Date de relance"|trans }}</small>
+                                        <h3>{{ processed_stats.latest_mandatary_reminder is null ? "aucune relance"|trans : processed_stats.latest_mandatary_reminder.date|date }}</h3>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="listview__item"></div>
+                            <div class="listview__item">
+                                <div class="col-md-3 offset-md-3">
+                                    <p><strong>{{ "Date du dernier"|trans }}</strong></p>
+                                </div>
+                                <div class="col-md-3">
+                                    <p><strong>{{ "Date du 1<sup>er</sup>"|trans|raw }}</strong></p>
+                                </div>
+                                <div class="col-md-3">
+                                    <p><strong>{{ "Nombre total"|trans }}</strong></p>
+                                </div>
+                            </div>
+                            <div class="listview__item">
+                                <div class="col-md-3 ">
+                                    <p><strong>{{ "Mandats" | trans }}</strong></p>
+                                </div>
+                                <div class="col-md-3 widget-past-days__info">
+                                    <h3>{{ mandatary.tradesDates is not empty ? mandatary.tradesDates|last|date : "-"|trans }}</h3>
+                                </div>
+                                <div class="col-md-3 widget-past-days__info">
+                                    <h3>{{ mandatary.tradesDates is not empty ? mandatary.tradesDates|first|date : "-"|trans }}</h3>
+                                </div>
+                                <div class="col-md-3 widget-past-days__info">
+                                    <h3>{{ "%s en cours dont %s exclusif"|format(mandatary.tradesCount, mandatary.exclusiveTradesCount) }}</h3>
+                                </div>
+                            </div>
+                            <div class="listview__item">
+                                <div class="col-md-3">
+                                    <p><strong>{{ "Compromis" | trans }}</strong></p>
+                                </div>
+                                <div class="col-md-3 widget-past-days__info">
+                                    <h3>{{ mandatary.compromisesDates is not empty ? mandatary.compromisesDates|last|date : "-"|trans }}</h3>
+                                </div>
+                                <div class="col-md-3 widget-past-days__info">
+                                    <h3>{{ mandatary.compromisesDates is not empty ? mandatary.compromisesDates|first|date : "-"|trans }}</h3>
+                                </div>
+                                <div class="col-md-3 widget-past-days__info">
+                                    <h3>{{ mandatary.compromisesCount }}</h3>
+                                </div>
+                            </div>
+                            <div class="listview__item">
+                                <div class="col-md-3">
+                                    <p><strong>{{ "Ventes" | trans }}</strong></p>
+                                </div>
+                                <div class="col-md-3 widget-past-days__info">
+                                    <h3>{{ mandatary.salesDates is not empty ? mandatary.salesDates|last|date : "-"|trans }}</h3>
+                                </div>
+                                <div class="col-md-3 widget-past-days__info">
+                                    <h3>{{ mandatary.salesDates is not empty ? mandatary.salesDates|first|date : "-"|trans }}</h3>
+                                </div>
+                                <div class="col-md-3 widget-past-days__info">
+                                    <h3>{{ mandatary.salesCount != mandatary.salesCount|round ? mandatary.salesCount|number_format(2, ',', ' ') : mandatary.salesCount }}</h3>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% if indicators_forms is not empty %}
+                    <div class="card">
+                        <div class="card-body">
+                            <h4 class="card-title">{{ "Indicateurs"|trans }}</h4>
+                            {% set group = null %}
+                            {% set previous_group = null %}
+                            {% for indicator_key, indicator_config in indicators_config|filter((indicator_config, indicator_key) => indicators_forms[indicator_key] is defined) %}
+                                {% set group = indicator_config.group %}
+                                {% if group != previous_group %}
+                                    <h3 class="card-body__title">{{ group }}</h3>
+                                    {% set previous_group = group %}
+                                {% endif %}
+                                {{ form(indicators_forms[indicator_key]) }}
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+            <div class="col-md-8">
+                <div class="card events">
+                    <div class="card-body">
+                        <h4 class="card-title">{{ "Événements"|trans }}</h4>
+                        <div class="actions">
+                            <a role="button"
+                               class="actions__item zmdi zmdi-plus"
+                               title="{{ "Créer un nouvel événement"|trans }}"
+                               data-ma-action="aside-open"
+                               data-ma-target=".new-event"
+                               data-toggle="tooltip"
+                               data-placement="left"
+                            ></a>
+                            <div class="dropdown actions__item">
+                                <i class="zmdi zmdi-search" title="filter" data-toggle="dropdown"
+                                   aria-expanded="false"></i>
+                                <div class="dropdown-menu dropdown-menu-right" x-placement="bottom-end"
+                                     style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(30px, 26px, 0px);">
+                                    {% for event_filter_key, event_filter_label in events_filters %}
+                                        <a role="button" class="dropdown-item"
+                                           data-filter-event-type="{{ event_filter_key }}"
+                                           data-filter-event-type-selected>
+                                            <i class="zmdi zmdi-check"></i>
+                                            {{ event_filter_label }}
+                                        </a>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                        <button class="btn btn-primary btn--action zmdi zmdi-plus"
+                                title="{{ "Créer un nouvel événement"|trans }}"
+                                data-ma-action="aside-open"
+                                data-ma-target=".new-event"
+                                data-toggle="tooltip"
+                                data-placement="left"
+                        ></button>
+                        <div class="listview listview--bordered">
+                            {% for event in events %}
+                                {% set event_config = events_config[event.type] %}
+                                <div class="listview__item event {{ event.date|date('U') > 'now'|date('U') ? 'event-to-come' }}"
+                                     data-event-type="{{ event_config.filters|join(',') }}"
+                                >
+                                    {% if event.initiator is not null %}
+                                        {# Initiateur externe : string #}
+                                        {% set initiator = event.initiator %}
+                                        {% set letter = initiator is not empty ? initiator|first|upper : '?' %}
+                                        <i class="{{ 'avatar-char %s'|format(get_color(letter)) }}"
+                                           title="{{ initiator is not empty ? initiator : "N.C."|trans }}"
+                                           data-toggle="tooltip"
+                                           data-placement="left"
+                                        >{{ letter }}</i>
+                                    {% else %}
+                                        {# Initiateur interne : coach ou négociateur #}
+                                        {% set initiator = event.coach is null ? mandatary : event.coach %}
+                                        {% if initiator.avatar is null %}
+                                            {% set letter = initiator.firstName|first|upper %}
+                                            <i class="{{ 'avatar-char %s'|format(get_color(letter)) }}"
+                                               title="{{ initiator }}"
+                                               data-toggle="tooltip"
+                                               data-placement="left"
+                                            >{{ letter }}</i>
+                                        {% else %}
+                                            <img src="{{ '/assets/avatar/%s'|format(initiator.avatar) }}"
+                                                 class="listview__img"
+                                                 alt="{{ "Photo de %mandatary%"|trans({'%mandatary%': initiator}) }}"
+                                                 title="{{ initiator }}"
+                                                 data-toggle="tooltip"
+                                                 data-placement="left"
+                                            >
+                                        {% endif %}
+                                    {% endif %}
+                                    <div class="listview__content">
+                                        {% include event_config.template with {
+                                            'event': event,
+                                            'event_config': event_config,
+                                        } only %}
+                                        {% if event.smsSent or event.reminderSmsSent %}
+                                            <p>
+                                                <i class="zmdi zmdi-phone-msg"></i>
+                                                {% if event.smsSent and event.reminderSmsSent %}
+                                                    {{ "SMS automatisé + SMS de rappel envoyés"|trans }}
+                                                {% elseif event.smsSent %}
+                                                    {{ "SMS automatisé envoyé"|trans }}
+                                                {% elseif event.reminderSmsSent %}
+                                                    {{ "SMS de rappel envoyé"|trans }}
+                                                {% endif %}
+                                            </p>
+                                        {% endif %}
+                                        <p class="text-right">
+                                            <small>
+                                                <i class="zmdi zmdi-time"></i>
+                                                {% set date = event.date|date %}
+                                                {% set time = event.date|date('H:i') %}
+                                                {{ time == '00:00' ? date : "%date% à %time%"|trans({'%date%': date, '%time%': event.date|date('H:i')}) }}
+                                            </small>
+                                        </p>
+                                    </div>
+                                    <div class="actions listview__actions">
+                                        <div class="dropdown actions__item {{ not event.deletable ? 'empty' }}">
+                                            {% if event.deletable %}
+                                                <i class="zmdi zmdi-more-vert" data-toggle="dropdown"></i>
+                                                <div class="dropdown-menu dropdown-menu-right">
+                                                    <a href="{{ path('event_delete', {id: event.id}) }}"
+                                                       class="dropdown-item">
+                                                        {{ "Supprimer"|trans }}
+                                                    </a>
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <aside class="new-event">
+        <div class="new-event__header">
+            <h2 class="new-event__title">
+                {{ "Nouvel événement"|trans }}
+                <small>{{ mandatary }}</small>
+            </h2>
+        </div>
+        <div class="scrollbar-inner">
+            <div class="tab-container">
+                <ul class="nav nav-tabs nav-fill" role="tablist">
+                    {% for event_type, event_config in events_config|filter((event_config, event_type) => events_forms[event_type] is defined) %}
+                        <li class="nav-item">
+                            <a class="nav-link {{ 1 == loop.index ? 'active' }}" data-toggle="tab"
+                               href="{{ '#%s'|format(event_type) }}" role="tab">{{ event_config.name }}</a>
+                        </li>
+                    {% endfor %}
+                </ul>
+                <div class="tab-content">
+                    {% for event_type, event_config in events_config|filter((event_config, event_type) => events_forms[event_type] is defined) %}
+                        <div class="tab-pane {{ 1 == loop.index ? 'active' }} fade show" id="{{ event_type }}"
+                             role="tabpanel">
+                            {{ form(events_forms[event_type]) }}
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </aside>
+{% endblock %}
+
+{% block stylesheets %}
+    <!-- Vendors: Forms -->
+    <link rel="stylesheet" href="/assets/vendors/flatpickr/flatpickr.min.css"/>
+{% endblock %}
+
+{% block javascripts %}
+    <!-- Vendors: Forms -->
+    <script src="/assets/vendors/flatpickr/flatpickr.min.js"></script>
+    <script src="/assets/vendors/autosize/autosize.min.js"></script>
+    <!-- Custom script -->
+    <script src="/assets/js/flatpickr-fr.js"></script>
+    <script src="/assets/js/mandatary-show.js"></script>
+{% endblock %}

@@ -1,0 +1,248 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ "%s > %s"|format(app_name, "Guide utilisateur"|trans) }}{% endblock %}
+{% block page_title %}
+    <i class="zmdi zmdi-help-outline"></i> {{ "Guide utilisateur"|trans }}
+{% endblock %}
+
+{% block content %}
+    <section class="content content--full">
+        <div class="card">
+            <div class="card-header">
+                <h2>Négociateurs</h2>
+            </div>
+            <div class="card-body">
+                <p>
+                    L'application regroupe tous les négociateurs actifs issus du CRM.<br>
+                    La mise à jour des données depuis le CRM vers l'application a lieu toutes les nuits vers 03h00.
+                </p>
+                <h3>Suivi</h3>
+                <p>L'état de suivi d'un négociateur par son coach est déterminé automatiquement selon la date du dernier contact (RDV ou appel téléphonique).</p>
+                <p>L'état de suivi est mis à jour toutes les nuits vers 03h00.</p>
+                <table class="table table-sm">
+                    <thead>
+                        <tr>
+                            <th>État de suivi</th>
+                            <th>Cause</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span class="badge badge-danger">pas de coach</span></td>
+                            <td>aucun coach</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge badge-danger">mauvais</span></td>
+                            <td>aucun contact, ou dernier contact pris il y a plus de 2 mois</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge badge-warning">moyen</span></td>
+                            <td>dernier contact pris il y a moins de 2 mois</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge badge-success">bon</span></td>
+                            <td>dernier contact pris il y a moins d'1 mois</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <h3>Accompagnement</h3>
+                <p>
+                    Le besoin d'accompagnement des négociateurs est défini manuellement par leur coach :<br>
+                    <span class="badge badge-danger">intensif</span>
+                    <span class="badge badge-warning">modéré</span>
+                    <span class="badge badge-success">léger</span>
+                </p>
+                <h3>Alertes</h3>
+                <p>
+                    Elles s'affichent en haut à droite de la fiche négo, sous la forme d'un bandeau noir.<br>
+                    Pour un même négociateur, une même alerte ne s'affichera qu'une fois toutes les 15 minutes.
+                </p>
+                <p>Alertes possibles :</p>
+                <dl>
+                    <dt>Négociateur sans coach.</dt>
+                    <dd>Le négociateur n'a pas de coach.</dd>
+                    <dt>Défaut administratif détecté.</dt>
+                    <dd>Le négociateur est entré dans le réseau depuis plus d'un mois et n'a pas validé toutes ses démarches administratives.</dd>
+                    <dt>Ce négociateur a 15 fois plus de mandats que de ventes.</dt>
+                    <dd>Le négociateur ne fait pas assez de ventes par rapport au nombre de mandats qu'il a en portefeuille.</dd>
+                </dl>
+                <h3>Événements</h3>
+                <p>Les événements peuvent être créés automatiquement par l'application à chaque mise à jour des données depuis le CRM, ou manuellement par le coach.</p>
+                <h4>Événements automatiques</h4>
+                <ul>
+                    <li>Entrée dans le réseau</li>
+                    <li>Résiliation</li>
+                    <li>Changement administratif</li>
+                    <li>Changement d'activités</li>
+                    <li>Changement de contrat</li>
+                    <li>Changement de pack</li>
+                    <li>1er, 2ème et 5ème mandat</li>
+                    <li>1er, 2ème et 5ème compromis</li>
+                    <li>1ère, 2ème et 5ème vente</li>
+                    <li>Plus de nouveau mandat depuis 30 jours</li>
+                    <li>Plus de nouveau compromis depuis 60 jours</li>
+                    <li>Plus de nouvelle vente depuis 90 jours</li>
+                    <li>Validation d'une mission de formation</li>
+                    <li>Anniversaire d'entrée dans le réseau</li>
+                    <li>Anniversaire de naissance</li>
+                    <li>Évaluation Freshdesk</li>
+                </ul>
+                <h4>Événements manuels</h4>
+                <dl>
+                    <dt>Rendez-vous</dt>
+                    <dd>Crée un événement dans l'agenda Google du coach et dans l'agenda Zimbra du négociateur.</dd>
+                    <dt>Appel téléphonique</dt>
+                    <dd>Permet de garder la trace d'un appel téléphonique entrant ou sortant.</dd>
+                    <dt>Rappel (coach)</dt>
+                    <dd>Crée un rappel pour le coach, sous la forme d'une notification.</dd>
+                    <dt>Commentaire</dt>
+                    <dd>Permet de laisser un commentaire dans la timeline du négociateur.</dd>
+                    <dt>Relance (négo)</dt>
+                    <dd>Envoie une relance au négociateur, par e-mail ou SMS.</dd>
+                    <dt>SMS</dt>
+                    <dd>Permet l'envoi ponctuel de SMS.</dd>
+                </dl>
+                <h4>Recherche d'événements dans la timeline d'un négociateur</h4>
+                <p>Dans la timeline du négociateur, les événements peuvent être filtrés par groupe selon leur type :</p>
+                <ul>
+                    <li>
+                        Administratif
+                        <ul>
+                            <li>Changement d'activités</li>
+                            <li>Changement de contrat</li>
+                            <li>Changement de pack</li>
+                            <li>Changement administratif</li>
+                            <li>Entrée dans le réseau</li>
+                            <li>Résiliation</li>
+                        </ul>
+                    </li>
+                    <li>
+                        RDV
+                        <ul>
+                            <li>Rendez-vous</li>
+                        </ul>
+                    </li>
+                    <li>
+                        Anniversaires
+                        <ul>
+                            <li>Anniversaire d'entrée dans le réseau</li>
+                            <li>Anniversaire de naissance</li>
+                        </ul>
+                    </li>
+                    <li>
+                        Appels
+                        <ul>
+                            <li>Appel téléphonique</li>
+                        </ul>
+                    </li>
+                    <li>
+                        Relances, rappels &amp; SMS
+                        <ul>
+                            <li>Rappel (coach)</li>
+                            <li>Relance (négo)</li>
+                            <li>SMS</li>
+                        </ul>
+                    </li>
+                    <li>
+                        Coaching
+                        <ul>
+                            <li>Rendez-vous</li>
+                            <li>Appel téléphonique</li>
+                            <li>Rappel (coach)</li>
+                            <li>Commentaire</li>
+                            <li>Relance (négo)</li>
+                            <li>SMS</li>
+                            <li>Évaluation Freshdesk</li>
+                        </ul>
+                    </li>
+                    <li>
+                        Commentaires
+                        <ul>
+                            <li>Commentaire</li>
+                        </ul>
+                    </li>
+                    <li>
+                        Problèmes
+                        <ul>
+                            <li>Plus de nouveau mandat</li>
+                            <li>Plus de nouveau compromis</li>
+                            <li>Plus de nouvelle vente</li>
+                            <li>Résiliation</li>
+                        </ul>
+                    </li>
+                    <li>
+                        Succès
+                        <ul>
+                            <li>Énième mandat</li>
+                            <li>Énième compromis</li>
+                            <li>Énième vente</li>
+                            <li>Validation d'une mission de formation</li>
+                        </ul>
+                    </li>
+                    <li>
+                        Formation
+                        <ul>
+                            <li>Validation d'une mission de formation</li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header">
+                <h2>Notifications</h2>
+            </div>
+            <div class="card-body">
+                <p>Les notifications s'adressent aux coachs et sont affichées au clic sur la cloche présente dans le bandeau d'en-tête. Elles sont accessibles depuis n'importe quelle page.</p>
+                <p>Vous recevez une notification :</p>
+                <ul>
+                    <li>Lorsque vous devenez coach d'un négociateur.</li>
+                    <li>Lorsqu'un de vos négociateurs a signé son premier/deuxième/cinquième mandat/compromis/vente.</li>
+                    <li>Lorsqu'un de vos négociateurs n'a pas rentré de mandat depuis 30 jours.</li>
+                    <li>Lorsqu'un de vos négociateurs n'a pas signé de compromis depuis 60 jours.</li>
+                    <li>Lorsqu'un de vos négociateurs n'a pas fait de vente depuis 90 jours.</li>
+                    <li>Lorsqu'un de vos négociateurs a fait une demande de résiliation.</li>
+                    <li>Lorsqu'un de vos négociateurs ne fait pas assez de ventes par rapport au nombre de mandats qu'il a en portefeuille.</li>
+                    <li>Lorsqu'un de vos négociateurs laisse une mauvaise évaluation sur Freshdesk</li>
+                    <li>Pour les événements manuels de type "Rappel (coach)", lorsque le mode de rappel est par notification.</li>
+                </ul>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header">
+                <h2>SMS</h2>
+            </div>
+            <div class="card-body">
+                <p>Les négociateurs reçoivent des SMS :</p>
+                <ul>
+                    <li>Lorsqu'ils rentrent leur 1er mandat.</li>
+                    <li>Lorsqu'ils signent leur 1er compromis.</li>
+                    <li>Lorsqu'ils font leur 1ère vente.</li>
+                    <li>Lorsque leur coach leur fixe un rendez-vous, pour les notifier.</li>
+                    <li>Lorsque leur coach annule un rendez-vous à venir.</li>
+                    <li>24h avant un rendez-vous avec leur coach.</li>
+                    <li>Pour les événements manuels de type "Relance (négo)", lorsque le mode de relance est par SMS.</li>
+                    <li>Pour les événements manuels de type "SMS".</li>
+                    <li>Pour leurs anniversaires (naissance et entrée dans le réseau)</li>
+                </ul>
+                <p>L'envoi des SMS liés aux événements automatiques a toujours lieu pendant les horaires de présence des coachs (en semaine, de 9h à 17h).</p>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header">
+                <h2>E-mails</h2>
+            </div>
+            <div class="card-body">
+                <p>Les négociateurs reçoivent des e-mails :</p>
+                <ul>
+                    <li>Lorsqu'un événement est ajouté dans leur agenda Zimbra.</li>
+                    <li>Pour les événements manuels de type "Relance (négo)", lorsque le mode de relance est par e-mail.</li>
+                </ul>
+                <p>Les coachs reçoivent des e-mails :</p>
+                <ul>
+                    <li>Pour les événements manuels de type "Rappel (coach)", lorsque le mode de rappel est par e-mail.</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+{% endblock %}
